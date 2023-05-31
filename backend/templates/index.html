@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    דף הבית
+{% endblock %}
+
+{% block body %}
+<div class="container main_section">     
+    <div class="row">
+        <div class="col">
+            <form action="/add_new_order" method="GET">
+                <button type="submit" value="Submit" class="btn btn-primary text-nowrap btn-lg">הזמנה חדשה</button>
+            </form>
+        </div>
+
+        <div class="col">
+            <form action="/update_order" method="GET">
+                <button type="submit" value="Submit" class="btn btn-primary text-nowrap btn-lg">עדכן הזמנה</button>
+            </form>
+        </div>
+        <div class="col">
+            <form action="/remove_order" method="GET">
+                <button type="submit" value="Submit" class="btn btn-primary text-nowrap btn-lg">מחיקת הזמנה</button>
+            </form>
+        </div>
+    </div>
+    <hr>    
+    <div class="row">
+        <div class="col">
+            <form action="/view_all_orders" method="GET">
+                <button type="submit" value="Submit" class="btn btn-primary text-nowrap btn-lg">כל ההזמנות</button>
+            </form>
+        </div>
+        <div class="col">
+            <form action="/view_all_orders_undelivered" method="GET">
+                <button type="submit" value="Submit" class="btn btn-primary text-nowrap btn-lg">כל ההזמנות שלא נמסרו</button>
+            </form>
+        </div>
+
+    </div>
+
+    <hr>
+    <div class="row">
+        <div class="col">
+            <form action="/view_analytics" method="GET">
+                <button type="submit" value="Submit" class="btn btn-primary text-nowrap btn-lg">ניתוח נתונים</button>
+            </form>
+        </div>
+    </div>
+</div>{% endblock %}

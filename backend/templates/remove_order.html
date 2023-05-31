@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    מחיקת הזמנה
+{% endblock %}
+
+{% block body %}
+    <h1>מחיקת הזמנה</h1>
+    {% if success == "True" %}
+    <h2>הזמנה נמחקה!</h2>
+    {% elif success == "False" %}
+    <h2>לא קיים הזמנה שמקושרת למספר זה</h2>
+    {% endif %}
+    <form action="/remove_order" method="POST">
+        <input type="number" name="phone" class="form-control" id="phone" placeholder="מספר טלפון" required>
+        <button type="submit" value="Submit" class="btn btn-danger text-nowrap btn-lg" style="margin: 20px;">מחק הזמנה</button>
+    </form>
+
+    <form action="/" method="GET">
+        <button type="submit" value="Submit" class="btn btn-primary text-nowrap btn-lg">דף בית</button>
+    </form>
+{% endblock %}

@@ -1,0 +1,50 @@
+version: '3'
+services:
+  app:
+    image: orders_srv
+    container_name: app
+    build:
+      context: ./backend
+    volumes:
+      - ./backend:/app
+    restart: unless-stopped
+    depends_on:
+      - db
+    networks:
+      - backend
+      - frontend
+
+  db:
+    image: mysql:8
+    container_name: db
+    restart: unless-stopped
+    volumes:
+      - orders-data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: ${DATABASE_NAME}
+      MYSQL_ROOT_PASSWORD: ${DATABASE_PASS}
+    networks:
+      - backend
+
+  nginx:
+    image: nginx:1.25.0
+    container_name: nginx
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./backend/templates:/usr/share/nginx/html
+      - ./backend/static:/usr/share/nginx/html/static
+    depends_on:
+      - app
+    restart: always
+    networks:
+      - frontend
+    
+volumes:
+  orders-data:
+    driver: local
+
+networks:
+  backend:
+  frontend:

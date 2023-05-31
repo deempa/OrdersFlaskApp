@@ -1,0 +1,66 @@
+@import url(https://fonts.googleapis.com/earlyaccess/opensanshebrewcondensed.css);
+
+
+* {
+    max-width: 1300px;
+    margin: auto;
+    text-align: center;
+    font-size: 18px;
+    direction: rtl;
+}
+
+form{
+    margin: 50px;
+}
+
+h1{
+    padding: 20px;
+}
+
+.logo {
+    margin-top: 20px;
+    width: 20%;
+}
+
+table{
+    page-break-after  : auto ;
+}
+
+
+table {
+    color: #333;
+    font-size: .9em;
+    font-weight: 300;
+    line-height: 40px;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 2px solid #ed1c40;
+    width: 500px;
+    margin: 50px auto;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,.16);
+    border-radius: 2px;
+  }
+    
+  
+  input[type="button"] {
+      transition: all .3s;
+      border: 1px solid #ddd;
+      padding: 8px 16px;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 15px;
+  }
+  
+  input[type="button"]:not(.active) {
+      background-color:transparent;
+  }
+  
+  .active {
+      background-color: #2596be;
+      color :#fff;
+  }
+  
+  input[type="button"]:hover:not(.active) {
+      background-color: #ddd;
+      color: black;
+  }

@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    עדכון הזמנה
+{% endblock %}
+
+{% block body %}
+    <h1>עדכון הזמנה</h1>
+    {% if success == "True" %}
+    <h2>הזמנה עודכנה!</h2>
+    {% elif success == "False" %}
+    <h2>יש בעיה</h2>
+    {% endif %}
+
+    <form action="/is_order_exists" method="POST">
+        <input type="number" name="phone" class="form-control" id="phone" placeholder="מספר טלפון" required>
+        <button type="submit" value="Submit" class="btn btn-primary text-nowrap btn-lg" style="margin: 20px">בדוק אם הטלפון קיים במערכת</button>
+    </form>
+
+    {% if is_exists == "True" %}
+    <form action="/update_order" method="POST">
+        <div class="row">
+            <div class="col">
+                <input type="text" name="name" class="form-control" id="employee_name" value="{{ name }}" required>
+            </div>
+        <div class="col">
+            <input type="number" name="phone" class="form-control" id="employee_age" value="{{ phone }}" required>
+        </div>
+        </div>
+
+        <br>
+        
+        <div class="row">
+            <div class="col">
+                <input type="text" name="address" class="form-control" id="employee_department" value="{{ address }}" required>
+            </div>
+            <div class="col">
+                <input type="datetime-local" name="shipment_date" class="form-control" id="employee_id" value="{{ shipment_date }}" required>
+            </div>
+        </div>
+
+        <br>
+        
+        <div class="row">
+            <div class="col">
+                <select class="form-select" aria-label="Default select example" name="payment_method" required>
+                    {% if payment_method == "ביט" %}
+                        <option selected value="ביט">ביט</option>
+                        <option value="מזומן">מזומן</option>
+                    {% else %}
+                        <option value="ביט">ביט</option>
+                        <option selected value="מזומן">מזומן</option>
+                    {% endif %}
+                </select>
+            </div>
+            <div class="col">
+                <select class="form-select" aria-label="Default select example" name="paid" required>
+                    {% if paid == "שולם" %}
+                        <option selected value="שולם">שולם</option>
+                        <option value="לא שולם">לא שולם</option>
+                    {% else %}
+                        <option value="שולם">שולם</option>
+                        <option selected value="לא שולם">לא שולם</option>
+                    {% endif %}
+                </select>
+            </div>
+        </div>
+
+        <br>
+
+        <div class="row">
+            <div class="col">
+                <select class="form-select" aria-label="Default select example" name="delivered" required>
+                    {% if delivered == "נמסר" %}
+                        <option selected value="נמסר">נמסר</option>
+                        <option value="לא נמסר">לא נמסר</option>
+                    {% else %}
+                        <option value="נמסר">נמסר</option>
+                        <option selected value="לא נמסר">לא נמסר</option>
+                    {% endif %}
+                </select>
+            </div>
+            <div class="col">
+                <input type="number" name="quantity" class="form-control" id="quantity" value="{{ quantity }}" required>
+            </div>
+        </div>
+
+
+
+
+        <button type="submit" value="Submit" class="btn btn-primary text-nowrap btn-lg" style="margin: 20px;">עדכן הזמנה</button>
+    </form>
+    {% elif is_exists == "False" %}
+    <h2>אין מספר כזה במערכת</h2>
+    {% endif %}
+
+    <form action="/" method="GET">
+        <button type="submit" value="Submit" class="btn btn-primary text-nowrap btn-lg">דף בית</button>
+    </form>
+{% endblock %}

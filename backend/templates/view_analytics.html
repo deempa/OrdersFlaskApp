@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    ניתוח נתונים
+{% endblock %}
+
+{% block body %}
+  <h1>ניתוח נתונים</h1>
+  <div class="row">
+
+    <div class="col">
+      <div class="card" style="width: 18rem;">  
+          <div class="card-body">
+            <h5 class="card-title fs-3">הכנסות כוללות</h5>
+            <hr>
+            <p class="card-text fs-5 text-primary"> {{ revenue }} ש״ח</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+      <div class="card" style="width: 18rem;">
+        <div class="card-body">
+          <h5 class="card-title fs-3">גלידות שנמכרו</h5>
+          <hr>
+          <p class="card-text fs-5 text-primary">{{ units_sold }}</p>
+        </div>
+      </div>
+  </div>
+
+
+  </div>
+  <form action="/" method="GET">
+      <button type="submit" value="Submit" class="btn btn-primary text-nowrap btn-lg">דף הבית</button>
+  </form>
+{% endblock %}

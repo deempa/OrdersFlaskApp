@@ -1,0 +1,6 @@
+backend/db/__pycache__/*
+backend/__pycache__/*
+db/__pycache__/*
+tests/*
+backend/.env
+.env

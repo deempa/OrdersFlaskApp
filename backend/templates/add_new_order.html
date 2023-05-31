@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    הזמנה חדשה
+{% endblock %}
+
+{% block body %}
+    <h1>הוסף הזמנה חדשה</h1>
+    {% if success == "0" %}
+    <h2>הזמנה הוספה בהצלחה</h2>
+    {% elif success == "1" %}
+    <h2>יש בעיה</h2>
+    {% endif %}
+
+    <form action="/add_new_order" method="POST">
+      <div class="row">
+        <div class="col">
+          <input type="text" name="name" class="form-control" id="employee_name" placeholder="שם מלא" required>
+        </div>
+        <div class="col">
+          <input type="number" name="phone" class="form-control" id="employee_age" placeholder="מספר טלפון" required>
+        </div>
+      </div>
+        
+      <br>
+
+      <div class="row">
+        <div class="col">
+          <input type="text" name="address" class="form-control" id="employee_department" placeholder="כתובת משלוח" required>
+        </div>
+        <div class="col">
+          <input type="datetime-local" name="shipment_date" class="form-control" id="employee_id" placeholder="תאריך משלוח" required>
+        </div>
+      </div>
+
+      <br>
+
+      <div class="row">
+        <div class="col">
+          <select class="form-select" aria-label="Default select example" name="payment_method" required>
+            <option value="ביט">ביט</option>
+            <option selected value="מזומן">מזומן</option>
+          </select>
+        </div>
+        <div class="col">
+          <select class="form-select" aria-label="Default select example" name="paid" required>
+            <option value="שולם">שולם</option>
+            <option selected value="לא שולם">לא שולם</option>
+        </select>
+        </div>
+      </div>
+
+    <br>
+
+      <div class="row">
+        <div class="col">
+          <select class="form-select" aria-label="Default select example" name="delivered" required>
+            <option value="נמסר">נמסר</option>
+            <option selected value="לא נמסר">לא נמסר</option>
+          </select>
+        </div>
+        <div class="col">
+          <input type="number" name="quantity" class="form-control" id="quantity" placeholder="כמות" required>
+        </div>
+      </div>
+
+        <button type="submit" value="Submit" class="btn btn-primary text-nowrap btn-lg" style="margin: 20px;">הוסף הזמנה חדשה</button>
+    </form>
+
+    <form action="/" method="GET">
+        <button type="submit" value="Submit" class="btn btn-primary text-nowrap btn-lg">דף בית</button>
+    </form>
+{% endblock %}
