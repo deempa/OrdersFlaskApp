@@ -11,10 +11,11 @@ pipeline {
     stages {
         stage("Find Last Version") {
             when {
-                expression { return env.GIT_BRANCH == 'main' && env.GIT_COMMIT_MSG.contains('#release:') }
+                expression { return env.GIT_BRANCH == 'main' }
             }
             steps {
                 script { 
+                    println "${env.GIT_COMMIT_MSG}"
                     sh 'git fetch --all --tags'
                     // Version = (env.GIT_BRANCH  =~ /(\d+\.\d+)$/)[0][1]
                     Version = (env.GIT_COMMIT_MSG =~ /\d+\.\d+/)[0][1]
