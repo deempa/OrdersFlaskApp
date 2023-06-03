@@ -7,6 +7,7 @@ pipeline {
         ECR_URL = "644435390668.dkr.ecr.eu-west-2.amazonaws.com/lior-portfolio"
         IMAGE_NAME = "orders_app"
         CONTAINER_TEST_NAME = "orders_app_test"
+        GIT_COMMIT_MSG = sh (script: 'git log -1 --pretty=%B ${GIT_COMMIT}', returnStdout: true).trim()
     }
     stages {
         stage("Find Last Version") {
@@ -21,8 +22,6 @@ pipeline {
                         // Version = (env.GIT_BRANCH  =~ /(\d+\.\d+)$/)[0][1]
                         Version = (env.GIT_COMMIT_MSG =~ /\d+\.\d+/)[0][1]
                         println "Next version: ${Version}" 
-                        autoCancelled = true
-                        error('Aborting the build.')
                         def baseVersion = "${Version}"
                         def lastVersion = sh(script: "git tag | grep '^${baseVersion}' | sort -V | tail -n 1", returnStdout: true).trim()
                         println "Last version of ${baseVersion}: ${lastVersion}"
