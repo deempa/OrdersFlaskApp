@@ -13,10 +13,7 @@ pipeline {
 
         stage("Find Last Version") {
             when {
-                anyOf {
-                    branch 'feature/*'
-                    branch 'main'
-                }
+                branch 'main'
             }
             steps {
                 sshagent(['flask-app']) {
@@ -43,10 +40,7 @@ pipeline {
 
         stage("Build") {
             when {
-                anyOf {
-                    branch 'feature/*'
-                    branch 'main'
-                }
+                branch 'main'
             }
             steps {
                 sh "docker build -t ${IMAGE_NAME}:${nextVersion}"
@@ -55,10 +49,7 @@ pipeline {
 
         stage("Unit Tests") {
             when {
-                anyOf {
-                    branch 'feature/*'
-                    branch 'main'
-                }
+                branch 'main'
             }
             steps {
                 sh "docker run -d --rm -p 5000:5000 --name ${CONTAINER_TEST_NAME} ${IMAGE_NAME}:${nextVersion}"
