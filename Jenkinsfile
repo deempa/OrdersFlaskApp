@@ -11,12 +11,17 @@ pipeline {
     stages {
         stage("Find Last Version") {
             when {
-                expression { return env.GIT_BRANCH == 'main' }
+                expression { return env.GIT_BRANCH == 'main' && env.GIT_COMMIT_MSG.contains('#release:') }
             }
             steps {
                 script { 
                     sh 'git fetch --all --tags'
-                    Version = (env.GIT_BRANCH  =~ /(\d+\.\d+)$/)[0][1]
+                    /\d+\.\d+/
+                    // Version = (env.GIT_BRANCH  =~ /(\d+\.\d+)$/)[0][1]
+                    Version = (env.GIT_COMMIT_MSG =~ /\d+\.\d+/)[0][1]
+                    println "Next version: ${Version}" 
+                    autoCancelled = true
+                    error('Aborting the build.')
                     def baseVersion = "${Version}"
                     def lastVersion = sh(script: "git tag | grep '^${baseVersion}' | sort -V | tail -n 1", returnStdout: true).trim()
                     println "Last version of ${baseVersion}: ${lastVersion}"
