@@ -16,6 +16,7 @@ pipeline {
                 }
             }
         }
+        
         stage("Find Last Version") {
             when {
                 expression { return env.GIT_BRANCH == 'main' }
