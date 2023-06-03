@@ -64,7 +64,7 @@ pipeline {
             }
             steps {
                 sh "docker compose up -d"
-                sh "curl -I http://localhost:5000/health"
+                sh 'curl -I http://localhost:5000/health'
                 sh "docker compose down -v"
             }
         }
