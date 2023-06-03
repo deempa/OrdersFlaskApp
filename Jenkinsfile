@@ -41,7 +41,7 @@ pipeline {
 
         stage("Build") {
             when {
-                expression { return env.GIT_BRANCH =~ /^feature\/.*$/ || env.GIT_BRANCH == 'main' }
+                expression { return env.GIT_BRANCH =~ /^feature\\/.*$/ || env.GIT_BRANCH == 'main' }
             }
             steps {
                 sh "docker build -t ${IMAGE_NAME}:${nextVersion}"
