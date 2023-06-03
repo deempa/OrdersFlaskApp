@@ -10,6 +10,7 @@ pipeline {
         GIT_COMMIT_MSG = sh (script: 'git log -1 --pretty=%B ${GIT_COMMIT}', returnStdout: true).trim()
     }
     stages {
+
         stage("Find Last Version") {
             when {
                 anyOf {
@@ -37,13 +38,15 @@ pipeline {
                         println "Next version: ${nextVersion}" 
                     }
                 }  
-
             }
         }
 
         stage("Build") {
             when {
-                expression { return env.GIT_BRANCH =~ """/^feature\/.*$/""" || env.GIT_BRANCH == 'main' }
+                anyOf {
+                    branch 'feature/*';
+                    branch 'main'
+                }
             }
             steps {
                 sh "docker build -t ${IMAGE_NAME}:${nextVersion}"
@@ -52,18 +55,17 @@ pipeline {
 
         stage("Unit Tests") {
             when {
-                expression { return env.GIT_BRANCH =~ /^feature\/.*$/ || env.GIT_BRANCH == 'main' }
+                anyOf {
+                    branch 'feature/*'
+                    branch 'main'
+                }
             }
             steps {
                 sh "docker run -d --rm -p 5000:5000 --name ${CONTAINER_TEST_NAME} ${IMAGE_NAME}:${nextVersion}"
-
             }
         }
 
         stage("E2E Tests") {
-            when {
-                expression { return env.GIT_BRANCH =~ /^feature\/.*$/ || env.GIT_BRANCH == 'main' }
-            }
             steps {
                 sh "docker compose up -d"
                 sh "curl -I http://localhost:5000/health"
@@ -73,7 +75,7 @@ pipeline {
 
         stage("Publish") {
             when {
-                expression { return env.GIT_BRANCH == 'main' }
+                branch 'main'
             }
             steps {
                 sh "aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin 644435390668.dkr.ecr.eu-west-2.amazonaws.com"
