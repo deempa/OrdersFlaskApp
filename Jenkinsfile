@@ -14,26 +14,29 @@ pipeline {
                 expression { return env.GIT_BRANCH == 'main' }
             }
             steps {
-                script { 
-                    println "${env.GIT_COMMIT_MSG}"
-                    sh 'git fetch --all --tags'
-                    // Version = (env.GIT_BRANCH  =~ /(\d+\.\d+)$/)[0][1]
-                    Version = (env.GIT_COMMIT_MSG =~ /\d+\.\d+/)[0][1]
-                    println "Next version: ${Version}" 
-                    autoCancelled = true
-                    error('Aborting the build.')
-                    def baseVersion = "${Version}"
-                    def lastVersion = sh(script: "git tag | grep '^${baseVersion}' | sort -V | tail -n 1", returnStdout: true).trim()
-                    println "Last version of ${baseVersion}: ${lastVersion}"
-                    if (lastVersion == "") {
-                        nextVersion = "${baseVersion}.0"
-                    } else {
-                        def versionParts = lastVersion.split("\\.")
-                        def lastVersionNumber = Integer.parseInt(versionParts[-1])
-                        nextVersion = "${baseVersion}.${lastVersionNumber + 1}"
+                sshagent(['flask-app']) {
+                    script { 
+                        println "${env.GIT_COMMIT_MSG}"
+                        sh 'git fetch --all --tags'
+                        // Version = (env.GIT_BRANCH  =~ /(\d+\.\d+)$/)[0][1]
+                        Version = (env.GIT_COMMIT_MSG =~ /\d+\.\d+/)[0][1]
+                        println "Next version: ${Version}" 
+                        autoCancelled = true
+                        error('Aborting the build.')
+                        def baseVersion = "${Version}"
+                        def lastVersion = sh(script: "git tag | grep '^${baseVersion}' | sort -V | tail -n 1", returnStdout: true).trim()
+                        println "Last version of ${baseVersion}: ${lastVersion}"
+                        if (lastVersion == "") {
+                            nextVersion = "${baseVersion}.0"
+                        } else {
+                            def versionParts = lastVersion.split("\\.")
+                            def lastVersionNumber = Integer.parseInt(versionParts[-1])
+                            nextVersion = "${baseVersion}.${lastVersionNumber + 1}"
+                        }
+                        println "Next version: ${nextVersion}" 
                     }
-                    println "Next version: ${nextVersion}" 
                 }
+
             }
         }
 
