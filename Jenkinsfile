@@ -12,12 +12,14 @@ pipeline {
     stages {
         stage("Find Last Version") {
             when {
-                expression { return env.GIT_BRANCH == 'main' }
+                anyOf {
+                    branch 'feature/*'
+                    branch 'main'
+                }
             }
             steps {
                 sshagent(['flask-app']) {
                     script { 
-                        println "${env.GIT_COMMIT_MSG}"
                         sh 'git fetch --all --tags'
                         // Version = (env.GIT_BRANCH  =~ /(\d+\.\d+)$/)[0][1]
                         Version = (env.GIT_COMMIT_MSG =~ /\d+\.\d+\/)[0][1]
