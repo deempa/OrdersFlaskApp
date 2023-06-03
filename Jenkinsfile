@@ -41,7 +41,7 @@ pipeline {
 
         stage("Build") {
             when {
-                expression { return env.GIT_BRANCH =~ '.*feature.*' || env.GIT_BRANCH == 'main' }
+                expression { return env.GIT_BRANCH =~ /^feature\/.*$/ || env.GIT_BRANCH == 'main' }
             }
             steps {
                 sh "docker build -t ${IMAGE_NAME}:${nextVersion}"
@@ -50,7 +50,7 @@ pipeline {
 
         stage("Unit Tests") {
             when {
-                expression { return env.GIT_BRANCH =~ '.*feature.*' || env.GIT_BRANCH == 'main' }
+                expression { return env.GIT_BRANCH =~ /^feature\/.*$/ || env.GIT_BRANCH == 'main' }
             }
             steps {
                 sh "docker run -d --rm -p 5000:5000 --name ${CONTAINER_TEST_NAME} ${IMAGE_NAME}:${nextVersion}"
@@ -60,11 +60,11 @@ pipeline {
 
         stage("E2E Tests") {
             when {
-                expression { return env.GIT_BRANCH =~ '.*feature.*' || env.GIT_BRANCH == 'main' }
+                expression { return env.GIT_BRANCH =~ /^feature\/.*$/ || env.GIT_BRANCH == 'main' }
             }
             steps {
                 sh "docker compose up -d"
-                sh 'curl -I http://localhost:5000/health'
+                sh "curl -I http://localhost:5000/health"
                 sh "docker compose down -v"
             }
         }
