@@ -5,7 +5,9 @@ import os
 from datetime import timedelta
 from dotenv import load_dotenv
 from sqlalchemy.sql import func
+import logging
 
+logging.basicConfig(filename='app.log', encoding='utf-8', level=logging.DEBUG)
 load_dotenv()
 
 db = SQLAlchemy()
@@ -59,6 +61,7 @@ def add_new_order():
             request.form['delivered'], request.form['quantity'])
         db.session.add(new_order)
         db.session.commit()
+        logging.info(f"Added new order with ID: {new_order.id}")
         return render_template('add_new_order.html', success="0")
     
 @app.route('/remove_order', methods=['GET', 'POST'])
@@ -73,7 +76,10 @@ def remove_order():
             order = orderInfo.query.filter_by(phone=phone).first()
             db.session.delete(order)
             db.session.commit()
+            logging.info(f"Removed order with ID: {order.id} and Phone: {order.phone}")
             return render_template('remove_order.html', success="True")
+        else:
+            logging.info(f"Removed order with Phone: {order.phone}")
     else: # POST Method
         phone = request.form['phone']
         exists = db.session.query(orderInfo.id).filter_by(phone=phone).first() is not None
@@ -81,8 +87,10 @@ def remove_order():
             order = orderInfo.query.filter_by(phone=phone).first()
             db.session.delete(order)
             db.session.commit()
+            logging.info(f"Removed order with ID: {order.id} and Phone: {order.phone}")
             return render_template('remove_order.html', success="True")
         else:
+            logging.info(f"Unsuccesful Remove order operation with Phone: {order.phone}")
             return render_template('remove_order.html', success="False")
     
 @app.route('/is_order_exists', methods=['POST', 'GET'])
@@ -114,6 +122,7 @@ def update_order():
         order.delivered = request.form['delivered']
         order.quantity = request.form['quantity']
         db.session.commit()
+        logging.info(f"Order update succesfuly with ID: {order.id} and Phone: {phone}")
         return redirect(url_for('view_all_orders'))
     
 @app.route('/view_all_orders', methods=['GET'])
