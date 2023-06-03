@@ -44,7 +44,7 @@ pipeline {
         stage("Build") {
             when {
                 anyOf {
-                    branch 'feature/*';
+                    branch 'feature/*'
                     branch 'main'
                 }
             }
