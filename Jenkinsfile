@@ -9,14 +9,6 @@ pipeline {
         CONTAINER_TEST_NAME = "orders_app_test"
     }
     stages {
-        stage("Checkout") {
-            steps {
-                script {
-                    checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'github-app', url: 'git@github.com:deempa/OrdersFlaskApp.git']]])
-                }
-            }
-        } 
-
         stage("Find Last Version") {
             when {
                 expression { return env.GIT_BRANCH == 'main' }
