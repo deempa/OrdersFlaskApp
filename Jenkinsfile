@@ -16,7 +16,6 @@ pipeline {
             steps {
                 script { 
                     sh 'git fetch --all --tags'
-                    /\d+\.\d+/
                     // Version = (env.GIT_BRANCH  =~ /(\d+\.\d+)$/)[0][1]
                     Version = (env.GIT_COMMIT_MSG =~ /\d+\.\d+/)[0][1]
                     println "Next version: ${Version}" 
