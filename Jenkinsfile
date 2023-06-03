@@ -34,7 +34,7 @@ pipeline {
                         }
                         println "Next version: ${nextVersion}" 
                     }
-                } 
+                }  
 
             }
         }
