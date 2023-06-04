@@ -94,7 +94,7 @@ pipeline {
                         sh 'git restore .'
                         sh "git tag ${nextVersion}"
                         sh "git push origin ${nextVersion}"
-                        echo 'Finished Clean and reset Stage..' 
+                        echo 'Finished Clean and reset Stage..'  
                     }
                 }
             }
