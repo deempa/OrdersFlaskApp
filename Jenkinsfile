@@ -44,6 +44,11 @@ pipeline {
             steps {
                 sh "docker build --no-cache -t ${IMAGE_NAME}:${nextVersion} -f backend/Dockerfile ."
             }
+            post {
+                always {
+                    sh "Docker rmi ${IMAGE_NAME}:${nextVersion}"
+                }
+            }
         }
 
         // stage("Unit Tests") {
