@@ -48,11 +48,6 @@ pipeline {
                 }
                 
             }
-            post {
-                always {
-                    sh "docker rmi ${IMAGE_NAME}:${nextVersion}"
-                }
-            }
         }
 
         // stage("Unit Tests") {
