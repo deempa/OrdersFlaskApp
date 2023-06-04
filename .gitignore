@@ -2,4 +2,3 @@
 tests/*
 .env
 backend/app.log
-backend/.env
