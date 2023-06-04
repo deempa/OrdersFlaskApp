@@ -10,18 +10,42 @@ pipeline {
         GIT_COMMIT_MSG = sh (script: 'git log -1 --pretty=%B ${GIT_COMMIT}', returnStdout: true).trim()
     }
     stages {
+        // stage("Find Last Version") {
+        //     when {
+        //         branch 'main'
+        //     }
+        //     steps {
+        //         sshagent(['flask-app']) {
+        //             script { 
+        //                 sh 'git fetch --all --tags'
+        //                 // Version = (env.GIT_BRANCH  =~ /(\d+\.\d+)$/)[0][1]
+        //                 Version = (env.GIT_COMMIT_MSG =~ /\d+\.\d+\/)[0][1]
+        //                 println "Next version: ${Version}" 
+        //                 def baseVersion = "${Version}"
+        //                 def lastVersion = sh(script: "git tag | grep '^${baseVersion}' | sort -V | tail -n 1", returnStdout: true).trim()
+        //                 println "Last version of ${baseVersion}: ${lastVersion}"
+        //                 if (lastVersion == "") {
+        //                     nextVersion = "${baseVersion}.0"
+        //                 } else {
+        //                     def versionParts = lastVersion.split("\\.")
+        //                     def lastVersionNumber = Integer.parseInt(versionParts[-1])
+        //                     nextVersion = "${baseVersion}.${lastVersionNumber + 1}"
+        //                 }
+        //                 println "Next version: ${nextVersion}" 
+        //             }
+        //         }  
+        //     }
+        // }
 
         stage("Find Last Version") {
             when {
                 branch 'main'
             }
             steps {
-                sshagent(['flask-app']) {
-                    script { 
+                sshagent(["flask-app"]) {
+                    script {            
                         sh 'git fetch --all --tags'
-                        // Version = (env.GIT_BRANCH  =~ /(\d+\.\d+)$/)[0][1]
-                        Version = (env.GIT_COMMIT_MSG =~ /\d+\.\d+\/)[0][1]
-                        println "Next version: ${Version}" 
+                        Version = (env.GIT_BRANCH  =~ /(\d+\.\d+)$/)[0][1]
                         def baseVersion = "${Version}"
                         def lastVersion = sh(script: "git tag | grep '^${baseVersion}' | sort -V | tail -n 1", returnStdout: true).trim()
                         println "Last version of ${baseVersion}: ${lastVersion}"
@@ -32,11 +56,12 @@ pipeline {
                             def lastVersionNumber = Integer.parseInt(versionParts[-1])
                             nextVersion = "${baseVersion}.${lastVersionNumber + 1}"
                         }
-                        println "Next version: ${nextVersion}" 
+                        println "Next version: ${nextVersion}"  
                     }
-                }  
+                }
             }
         }
+
 
         stage("Build") {
             when {
