@@ -42,7 +42,7 @@ pipeline {
                 branch 'main'
             }
             steps {
-                sshagent(["flask-app"]) {
+                sshagent(["flask-app"]) { 
                     script {            
                         sh 'git fetch --all --tags'
                         Version = (env.GIT_COMMIT_MSG  =~ /(\d+\.\d+)$/)[0][1]
