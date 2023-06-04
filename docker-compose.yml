@@ -6,8 +6,8 @@ services:
     build: ./backend
     # volumes:
     #   - ./backend:/app
-    env_file:
-      - backend/.env
+    # env_file:
+    #   - backend/.env
     restart: unless-stopped
     depends_on:
       - db
@@ -22,8 +22,8 @@ services:
     volumes:
       - orders-data:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: ${DATABASE_NAME}
-      MYSQL_ROOT_PASSWORD: ${DATABASE_PASS}
+      MYSQL_DATABASE: orders_management
+      MYSQL_ROOT_PASSWORD: 12345678
     networks:
       - backend
 
