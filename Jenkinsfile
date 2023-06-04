@@ -6,7 +6,7 @@ pipeline {
     environment {
         ECR_URL = "644435390668.dkr.ecr.eu-west-2.amazonaws.com/lior-portfolio"
         IMAGE_NAME = "orders_app"
-        CONTAINER_TEST_NAME = "orders_app_test"
+        CONTAINER_TEST_NAME = "orders_app_test" 
         GIT_COMMIT_MSG = sh (script: 'git log -1 --pretty=%B ${GIT_COMMIT}', returnStdout: true).trim()
         PUBLIC_IP = sh (script: 'curl ifconfig.me', returnStdout: true).trim()
         NETWORK_NAME = "lab_default"
