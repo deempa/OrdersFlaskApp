@@ -52,8 +52,6 @@ pipeline {
         stage("E2E Tests") {
             steps {
                 sh "docker compose up -d"
-                // sh "sleep 20"
-                // sh "curl -I http://${PUBLIC_IP}:8087/health"
                 sh '''#!/bin/bash
                     for (( i=0; i <= 15; ++i ))
                     do
@@ -95,6 +93,16 @@ pipeline {
                         echo 'Finished Clean and reset Stage..'  
                     }
                 }
+            }
+        }
+
+
+        stage("Update ArgoCD") {
+            when {
+                branch 'main'
+            }
+            steps {
+                sh "echo update argocd tag"
             }
         }
     }
