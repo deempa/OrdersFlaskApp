@@ -8,6 +8,7 @@ from sqlalchemy.sql import func
 import logging
 
 logging.basicConfig(filename='app.log', encoding='utf-8', level=logging.DEBUG)
+
 load_dotenv()
 
 db = SQLAlchemy()
