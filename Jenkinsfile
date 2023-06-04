@@ -61,7 +61,8 @@ pipeline {
         stage("E2E Tests") {
             steps {
                 sh "docker compose up -d"
-                sh "curl -I http://localhost:5000/health"
+                sh "sleep 20"
+                sh "curl -I http://localhost:8087/health"
                 sh "docker compose down -v"
             }
         }
