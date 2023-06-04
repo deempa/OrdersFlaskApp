@@ -8,6 +8,7 @@ pipeline {
         IMAGE_NAME = "orders_app"
         CONTAINER_TEST_NAME = "orders_app_test"
         GIT_COMMIT_MSG = sh (script: 'git log -1 --pretty=%B ${GIT_COMMIT}', returnStdout: true).trim()
+        PUBLIC_IP = sh (script: 'curl ifconfig.me', returnStdout: true).trim()
         NETWORK_NAME = "lab_default"
     }
     stages {
@@ -70,7 +71,7 @@ pipeline {
             steps {
                 sh "docker compose up -d"
                 sh "sleep 20"
-                sh "curl -I http://localhost:8087/health"
+                sh "curl -I http://${PUBLIC_IP}:8087/health"
                 sh "docker compose down -v"
             }
         }
