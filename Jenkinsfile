@@ -54,7 +54,7 @@ pipeline {
                 sh "docker compose up -d"
                 // sh "sleep 20"
                 // sh "curl -I http://${PUBLIC_IP}:8087/health"
-                sh '''#!/bin/sh
+                sh '''#!/bin/bash
                     for (( i=0; i <= 15; ++i ))
                     do
                         response_code=$(curl -s -o /dev/null -w "%{http_code}" "http://${PUBLIC_IP}:8087/health")
