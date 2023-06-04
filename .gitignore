@@ -1,8 +1,5 @@
-backend/db/__pycache__/*
-backend/__pycache__/*
+__pycache__/*
 db/__pycache__/*
 tests/*
-backend/.env
 .env
-
-backend/app.log
+app.log
