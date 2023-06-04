@@ -26,7 +26,7 @@ pipeline {
                             println "Ok"
                         } else {
                             error('Aborting the build - No valid commit message.')
-                        }
+                        } 
                         sh 'git fetch --all --tags'
                         Version = (env.GIT_COMMIT_MSG  =~ /(\d+\.\d+)$/)[0][1]
                         def baseVersion = "${Version}"
