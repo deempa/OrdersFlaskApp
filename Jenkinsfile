@@ -20,7 +20,7 @@ pipeline {
                 }            
             }
             steps {
-                sshagent(["flask-app"]) { 
+                sshagent(["flask-app"]) {  
                     script {            
                         if (env.GIT_COMMIT_MSG =~ /(\d+\.\d+)$/) {
                             println "Ok"
