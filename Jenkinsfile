@@ -81,6 +81,24 @@ pipeline {
                 sh "docker push ${env.ECR_URL}:${nextVersion}"
             }
         }
+
+        stage('Clean and reset') {
+            when {
+                branch 'main'
+            }
+            steps {
+                sshagent(['flask-app'])
+                {
+                    script {
+                        echo 'Clean and reset Stage..'
+                        sh 'git restore .'
+                        sh "git tag ${nextVersion}"
+                        sh "git push origin ${nextVersion}"
+                        echo 'Finished Clean and reset Stage..'
+                    }
+                }
+            }
+        }
     }
 
     post {
