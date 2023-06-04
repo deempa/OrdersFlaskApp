@@ -47,7 +47,10 @@ pipeline {
 
         stage("Build") {
             when {
-                branch 'main'
+                anyOf {
+                    branch 'main'
+                    branch "feature/*"
+                }            
             }
             steps {
                 dir('backend') {
@@ -58,6 +61,12 @@ pipeline {
         }
 
         stage("E2E Tests") {
+            when {
+                anyOf {
+                    branch 'main'
+                    branch "feature/*"
+                }            
+            }
             steps {
                 sh "docker compose up -d"
                 sh '''#!/bin/bash
