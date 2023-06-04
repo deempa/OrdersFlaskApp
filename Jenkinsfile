@@ -14,7 +14,10 @@ pipeline {
     stages {
         stage("Find Last Version") {
             when {
-                branch 'main'
+                anyOf {
+                    branch 'main'
+                    branch "feature/*"
+                }            
             }
             steps {
                 sshagent(["flask-app"]) { 
