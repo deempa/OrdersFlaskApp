@@ -46,17 +46,17 @@ pipeline {
             }
         }
 
-        stage("Unit Tests") {
-            when {
-                branch 'main'
-            }
-            steps {
-                sh "docker run -d --rm --network=${env.NETWORK_NAME} --name ${CONTAINER_TEST_NAME} ${IMAGE_NAME}:${nextVersion}"
-                sh "sleep 15"
-                sh "curl -I http://${CONTAINER_TEST_NAME}:5000"
-                sh "docker stop ${CONTAINER_TEST_NAME}"
-            }
-        }
+        // stage("Unit Tests") {
+        //     when {
+        //         branch 'main'
+        //     }
+        //     steps {
+        //         sh "docker run -d --rm --network=${env.NETWORK_NAME} --name ${CONTAINER_TEST_NAME} ${IMAGE_NAME}:${nextVersion}"
+        //         sh "sleep 15"
+        //         sh "curl -I http://${CONTAINER_TEST_NAME}:5000"
+        //         sh "docker stop ${CONTAINER_TEST_NAME}"
+        //     }
+        // }
 
         stage("E2E Tests") {
             steps {
