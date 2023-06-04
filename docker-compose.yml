@@ -32,7 +32,7 @@ services:
     ports:
       - 8087:80
     volumes:
-      - nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
       - ./backend/templates:/usr/share/nginx/html
       - ./backend/static:/usr/share/nginx/html/static
     depends_on:
