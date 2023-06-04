@@ -68,7 +68,7 @@ pipeline {
                 branch 'main'
             }
             steps {
-                sh "docker build -f Dockerfile -t ${IMAGE_NAME}:${nextVersion} ./backend/"
+                sh "docker build -t ${IMAGE_NAME}:${nextVersion} -f ./backend/Dockerfile"
             }
         }
 
