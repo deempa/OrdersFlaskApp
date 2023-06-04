@@ -42,11 +42,14 @@ pipeline {
                 branch 'main'
             }
             steps {
-                sh "docker build --no-cache -t ${IMAGE_NAME}:${nextVersion} -f backend/Dockerfile ."
+                dir('backend') {
+                    sh "docker build --no-cache -t ${IMAGE_NAME}:${nextVersion} ."
+                }
+                
             }
             post {
                 always {
-                    sh "Docker rmi ${IMAGE_NAME}:${nextVersion}"
+                    sh "docker rmi ${IMAGE_NAME}:${nextVersion}"
                 }
             }
         }
