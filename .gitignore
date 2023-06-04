@@ -4,3 +4,5 @@ db/__pycache__/*
 tests/*
 backend/.env
 .env
+
+backend/app.log
