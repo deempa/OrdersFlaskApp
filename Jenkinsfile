@@ -90,7 +90,7 @@ pipeline {
                 }            
             }
             steps {
-                sh "pytest"
+                sh "pytest tests/"
                 sh "docker compose down -v"
             }
         }
