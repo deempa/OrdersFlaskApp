@@ -6,23 +6,19 @@ from datetime import timedelta
 from dotenv import load_dotenv
 from sqlalchemy.sql import func
 import logging
-from flask_wtf.csrf import CSRFProtect
 
 logging.basicConfig(filename='app.log', encoding='utf-8', level=logging.DEBUG)
 
 load_dotenv()
 
-
 db = SQLAlchemy()
 app = Flask(__name__)
-
-csrf = CSRFProtect(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://" + os.getenv("DATABASE_USER") + ":" +\
     os.getenv("DATABASE_PASS") + "@" + os.getenv("DATABASE_HOST") +":3306/" + os.getenv("DATABASE_NAME")
     
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# app.permanent_session_lifetime = timedelta(minutes=5)
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.permanent_session_lifetime = timedelta(minutes=5)
 
 db.init_app(app)
 
