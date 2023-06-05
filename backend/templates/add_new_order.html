@@ -61,11 +61,9 @@
       <br>
 
       {% if success == "0" %}
-      <i class="fa-solid fa-badge-check" style="color: #2bda7f;"></i>
-      <h2>הזמנה הוספה בהצלחה</h2>
+      <h2>✅ הזמנה הוספה בהצלחה</h2>
       {% elif success == "1" %}
-      <i class="fa-solid fa-circle-xmark" style="color: #ff0026;"></i>
-      <h2>יש בעיה</h2>
+      <h2>❌ יש בעיה</h2>
       {% endif %}
 
         <button type="submit" value="Submit" class="btn btn-primary text-nowrap btn-lg" style="margin: 20px;">הוסף הזמנה חדשה</button>
