@@ -103,7 +103,7 @@ pipeline {
             steps {
                 sh "aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin 644435390668.dkr.ecr.eu-west-2.amazonaws.com"
                 sh "docker tag ${env.IMAGE_NAME}:${nextVersion} ${env.ECR_URL}:${nextVersion}"
-                sh "docker push ${env.ECR_URL}:${nextVersion}"
+                sh "docker push ${env.ECR_URL}:${nextVersion}" 
             }
         }
 
