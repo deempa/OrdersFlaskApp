@@ -12,7 +12,6 @@
     <h2>לא קיים הזמנה שמקושרת למספר זה</h2>
     {% endif %}
     <form action="/remove_order" method="POST">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         <input type="number" name="phone" class="form-control" id="phone" placeholder="מספר טלפון" required>
         <button type="submit" value="Submit" class="btn btn-danger text-nowrap btn-lg" style="margin: 20px;">מחק הזמנה</button>
     </form>

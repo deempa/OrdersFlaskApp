@@ -13,14 +13,12 @@
     {% endif %}
 
     <form action="/is_order_exists" method="POST">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         <input type="number" name="phone" class="form-control" id="phone" placeholder="מספר טלפון" required>
         <button type="submit" value="Submit" class="btn btn-primary text-nowrap btn-lg" style="margin: 20px">בדוק אם הטלפון קיים במערכת</button>
     </form>
 
     {% if is_exists == "True" %}
     <form action="/update_order" method="POST">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         <div class="row">
             <div class="col">
                 <input type="text" name="name" class="form-control" id="employee_name" value="{{ name }}" required>
