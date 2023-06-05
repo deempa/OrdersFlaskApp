@@ -7,6 +7,6 @@ def test_add_new_order():
     order = {'name': 'ליאור', 'phone': '0505567800', 'address': 'מגדל שורשן 2', 'shipment_date': '2023-06-01T01:35', 'paid': 'שולם',\
         'delivered': 'נמסר', 'payment_method': 'מזומן', 'quantity': 2}
 
-    response = requests.post(url, json = order)
+    response = requests.post(url, data = order)
     assert response.status_code == 200
         
