@@ -35,8 +35,19 @@
                         <td>{{row.address}}</td>
                         <td>{{row.shipment_date}}</td>
                         <td>{{row.payment_method}}</td>
-                        <td>{{row.paid}}</td>
-                        <td>{{row.delivered}}</td>
+
+                        {% if row.paid == "שולם" %}
+                        <td>✅</td>
+                        {% else %}
+                        <td>❌</td>
+                        {% endif %}
+
+                        {% if row.delivered == "נמסר" %}
+                        <td>✅</td>
+                        {% else %}
+                        <td>❌</td>
+                        {% endif %}
+                        
                         <td>{{row.quantity}}</td>
                     <td><a class="btn btn-info text-nowrap" href="/is_order_exists?phone={{row.phone}}">עדכן</a></td>
                     <td><a class="btn btn-danger text-nowrap" href="/remove_order?phone={{row.phone}}">מחק</a></td>
