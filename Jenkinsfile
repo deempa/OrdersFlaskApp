@@ -90,6 +90,7 @@ pipeline {
                 }            
             }
             steps {
+                sh "sleep 5"
                 sh "pytest tests/e2e.py"
                 sh "docker compose down -v" 
             }
