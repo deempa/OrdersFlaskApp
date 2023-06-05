@@ -6,12 +6,6 @@
 
 {% block body %}
     <h1>הוסף הזמנה חדשה</h1>
-    {% if success == "0" %}
-    <h2><i class="fa-solid fa-badge-check fa-2xs" style="color: #34ea58;"></i>הזמנה הוספה בהצלחה</h2>
-    {% elif success == "1" %}
-    <h2>יש בעיה</h2>
-    {% endif %}
-
     <form action="/add_new_order" method="POST">
       <div class="row">
         <div class="col">
@@ -63,6 +57,12 @@
           <input type="number" name="quantity" class="form-control" id="quantity" placeholder="כמות" required>
         </div>
       </div>
+
+      {% if success == "0" %}
+      <h2><i class="fa-solid fa-badge-check" style="color: #2bda7f;"></i>הזמנה הוספה בהצלחה</h2>
+      {% elif success == "1" %}
+      <h2><i class="fa-solid fa-circle-xmark" style="color: #ff0026;"></i>יש בעיה</h2>
+      {% endif %}
 
         <button type="submit" value="Submit" class="btn btn-primary text-nowrap btn-lg" style="margin: 20px;">הוסף הזמנה חדשה</button>
     </form>

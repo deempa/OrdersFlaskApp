@@ -59,7 +59,7 @@ pipeline {
             }
         }
 
-        stage("E2E Tests") {
+        stage("Unit Tests") {
             when {
                 anyOf {
                     branch 'main'
@@ -79,6 +79,18 @@ pipeline {
                     done
 
                 '''
+            }
+        }
+
+        stage("E2E Tests") {
+            when {
+                anyOf {
+                    branch 'main'
+                    branch "feature/*"
+                }            
+            }
+            steps {
+                sh "pytest"
                 sh "docker compose down -v"
             }
         }
