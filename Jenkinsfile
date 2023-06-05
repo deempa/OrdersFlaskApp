@@ -92,7 +92,7 @@ pipeline {
             steps {
                 sh "sleep 5"
                 sh "pytest tests/e2e.py"
-                sh "docker compose down -v" 
+                sh "docker compose down" 
             }
         }
 
@@ -145,7 +145,7 @@ pipeline {
 
     post {
         always {
-            // sh "docker compose down -v || echo 'already down'" 
+            sh "docker compose down || echo 'already down'" 
             cleanWs()
             echo "========pipeline executed successfully ========"
         }
