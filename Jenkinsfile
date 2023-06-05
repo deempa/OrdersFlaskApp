@@ -145,6 +145,7 @@ pipeline {
 
     post {
         always {
+            sh "docker compose down -v || echo 'already down'" 
             cleanWs()
             echo "========pipeline executed successfully ========"
         }
