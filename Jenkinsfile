@@ -55,8 +55,7 @@ pipeline {
             steps {
                 dir('backend') {
                     sh "docker build -t ${IMAGE_NAME}:${nextVersion} ."
-                }
-                
+                }     
             }
         }
 
@@ -113,7 +112,6 @@ pipeline {
             }
         }
 
-
         stage("Update ArgoCD") {
             when {
                 branch 'main'
@@ -127,8 +125,6 @@ pipeline {
                     sshagent(['argo-jenkins']) {
                         sh "git push origin main"
                     }
-                    
-                    // sh "yq -i '.app1.image.tag = "1.33.8"' ci/app1/values.yaml"
                 }
             }
         }
