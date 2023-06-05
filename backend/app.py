@@ -124,7 +124,8 @@ def update_order():
         order.quantity = request.form['quantity']
         db.session.commit()
         logging.info(f"Order update succesfuly with ID: {order.id} and Phone: {phone}")
-        return redirect(url_for('view_all_orders'))
+        # return redirect(url_for('view_all_orders'))
+        return render_template('view_all_orders.html')
     
 @app.route('/view_all_orders', methods=['GET'])
 def view_all_orders():
