@@ -154,4 +154,5 @@ def health():
     return make_response(jsonify(data), 200)
 
 if __name__ == '__main__':
-    app.run(ssl_context='adhoc')
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    app.run()
