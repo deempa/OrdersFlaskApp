@@ -1,11 +1,12 @@
 from flask import Flask, jsonify, make_response
-from flask import render_template, request, redirect, url_for
+from flask import render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 import os
 from datetime import timedelta
 from dotenv import load_dotenv
 from sqlalchemy.sql import func
 import logging
+from werkzeug.exceptions import NotFound
 
 logging.basicConfig(filename='app.log', encoding='utf-8', level=logging.DEBUG)
 
@@ -112,20 +113,44 @@ def update_order():
     if request.method == "GET":
         return render_template('update_order.html')
     else:
-        phone = request.form['phone']
-        order = db.session.query(orderInfo).filter(orderInfo.phone == phone).one()
-        order.name = request.form['name']
-        order.phone = request.form['phone']
-        order.address = request.form['address']
-        order.shipment_date = request.form['shipment_date']
-        order.payment_method = request.form['payment_method']
-        order.paid = request.form['paid']
-        order.delivered = request.form['delivered']
-        order.quantity = request.form['quantity']
-        db.session.commit()
-        logging.info(f"Order update succesfuly with ID: {order.id} and Phone: {phone}")
-        return redirect(url_for('view_all_orders'))
-        # return render_template('view_all_orders.html')
+        try:
+            phone = request.form['phone']
+            order = db.session.query(orderInfo).filter(orderInfo.phone == phone).one()
+            order.name = request.form['name']
+            order.phone = request.form['phone']
+            order.address = request.form['address']
+            order.shipment_date = request.form['shipment_date']
+            order.payment_method = request.form['payment_method']
+            order.paid = request.form['paid']
+            order.delivered = request.form['delivered']
+            order.quantity = request.form['quantity']
+            db.session.commit()
+            logging.info(f"Order updated successfully with ID: {order.id} and Phone: {phone}")
+            return redirect(url_for('view_all_orders'))
+        except NotFound:
+            flash("Order not found.")
+        except Exception as e:
+            flash(f"An error occurred: {str(e)}")
+            logging.error(f"Error updating order: {str(e)}")
+        
+        return redirect(url_for('update_order'))  # Redirect back to the update form with an error message
+
+    # if request.method == "GET":
+    #     return render_template('update_order.html')
+    # else:
+    #     phone = request.form['phone']
+    #     order = db.session.query(orderInfo).filter(orderInfo.phone == phone).one()
+    #     order.name = request.form['name']
+    #     order.phone = request.form['phone']
+    #     order.address = request.form['address']
+    #     order.shipment_date = request.form['shipment_date']
+    #     order.payment_method = request.form['payment_method']
+    #     order.paid = request.form['paid']
+    #     order.delivered = request.form['delivered']
+    #     order.quantity = request.form['quantity']
+    #     db.session.commit()
+    #     logging.info(f"Order update succesfuly with ID: {order.id} and Phone: {phone}")
+    #     return redirect(url_for('view_all_orders'))
     
 @app.route('/view_all_orders', methods=['GET'])
 def view_all_orders():
