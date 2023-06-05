@@ -7,6 +7,7 @@
 {% block body %}
     <h1>הוסף הזמנה חדשה</h1>
     <form action="/add_new_order" method="POST">
+      {{ form.csrf_token }}
       <div class="row">
         <div class="col">
           <input type="text" name="name" class="form-control" id="employee_name" placeholder="שם מלא" required>

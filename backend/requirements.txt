@@ -4,3 +4,4 @@ Flask-SQLAlchemy
 PyMySQL
 cryptography
 gunicorn
+Flask-WTF
