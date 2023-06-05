@@ -122,6 +122,9 @@ pipeline {
                 dir('gitops-config') {
                     git branch: 'main', credentialsId: 'argo-jenkins', url: 'git@github.com:deempa/GitOps-Config-Portfolio.git'
                     sh """yq -i '.image.tag = "${nextVersion}"' infra-apps/ordersapp/values.yaml"""  
+                    sh "git add ."
+                    sh "git commit -m 'new version'"
+                    sh "git push origin main"
                     // sh "yq -i '.app1.image.tag = "1.33.8"' ci/app1/values.yaml"
                 }
             }
