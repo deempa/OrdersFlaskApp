@@ -177,13 +177,13 @@ def view_revenues():
 @app.route('/health', methods=['GET'])
 def health():
     try:
-        db.session.execute("SELECT 1").scalar()
+        # db.session.execute("SELECT 1").scalar()
+        db.engine.execute('SELECT 1')
         data = {'message': 'Done', 'code': 'SUCCESS'}
         return make_response(jsonify(data), 200)
     except Exception as e:
         data = {'message': 'Error connecting to the database', 'code': 'FAILURE'}
         return make_response(jsonify(data), 500)
-
 
 if __name__ == '__main__':
     app.run()  
