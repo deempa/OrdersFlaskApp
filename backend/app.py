@@ -15,6 +15,8 @@ load_dotenv()
 db = SQLAlchemy()
 app = Flask(__name__)
 
+app.secret_key = "12345678"
+
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://" + os.getenv("DATABASE_USER") + ":" +\
     os.getenv("DATABASE_PASS") + "@" + os.getenv("DATABASE_HOST") +":3306/" + os.getenv("DATABASE_NAME")
     
@@ -177,8 +179,6 @@ def view_revenues():
 @app.route('/health', methods=['GET'])
 def health():
     try:
-        # db.session.execute("SELECT 1").scalar()
-        # db.session.query("1").all()
         orderInfo.query.all()
         data = {'message': 'Done', 'code': 'SUCCESS'}
         return make_response(jsonify(data), 200)
