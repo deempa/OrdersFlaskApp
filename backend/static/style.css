@@ -66,5 +66,5 @@ table {
   }
 
   button {
-    border-radius:13px;
+    border-radius:13px !important;
   }
