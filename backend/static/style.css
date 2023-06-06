@@ -64,3 +64,7 @@ table {
       background-color: #ddd;
       color: black;
   }
+
+  button {
+    border-radius:13px;
+  }
