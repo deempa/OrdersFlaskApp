@@ -176,8 +176,14 @@ def view_revenues():
 
 @app.route('/health', methods=['GET'])
 def health():
-    data = {'message': 'Done', 'code': 'SUCCESS'}
-    return make_response(jsonify(data), 200)
+    try:
+        db.session.execute('SELECT 1')
+        data = {'message': 'Done', 'code': 'SUCCESS'}
+        return make_response(jsonify(data), 200)
+    except Exception as e:
+        data = {'message': 'Error connecting to the database', 'code': 'FAILURE'}
+        status_code = 500
+
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", debug=True)  
+    app.run()  
