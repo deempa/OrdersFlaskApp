@@ -21,7 +21,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://" + os.getenv("DATABASE
     os.getenv("DATABASE_PASS") + "@" + os.getenv("DATABASE_HOST") +":3306/" + os.getenv("DATABASE_NAME")
     
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.permanent_session_lifetime = timedelta(minutes=5)
+app.permanent_session_lifetime = timedelta(minutes=5) 
 
 db.init_app(app)
 
