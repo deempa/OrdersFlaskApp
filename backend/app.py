@@ -128,7 +128,7 @@ def update_order():
             order.quantity = request.form['quantity']
             db.session.commit()
             logging.info(f"Order updated successfully with ID: {order.id} and Phone: {phone}")
-            return redirect(url_for('view_all_orders'))
+            return redirect(url_for('view_all_orders')) 
         except NotFound:
             flash("Order not found.")
         except Exception as e:
