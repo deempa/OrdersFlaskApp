@@ -178,7 +178,7 @@ def view_revenues():
 def health():
     try:
         # db.session.execute("SELECT 1").scalar()
-        db.session.query("1").from_statement("SELECT 1").all()
+        db.session.query("1").all()
         data = {'message': 'Done', 'code': 'SUCCESS'}
         return make_response(jsonify(data), 200)
     except Exception as e:
