@@ -54,7 +54,7 @@ pipeline {
             }
             steps {
                 dir('backend') {
-                    sh "docker build -t ${IMAGE_NAME}:${nextVersion} ."
+                    sh "docker build --no-cache -t ${IMAGE_NAME}:${nextVersion} ."
                 }     
             }
         }
