@@ -177,7 +177,7 @@ def view_revenues():
 @app.route('/health', methods=['GET'])
 def health():
     try:
-        db.session.execute('SELECT 1')
+        db.session.execute("SELECT 1").scalar()
         data = {'message': 'Done', 'code': 'SUCCESS'}
         return make_response(jsonify(data), 200)
     except Exception as e:
