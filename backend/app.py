@@ -8,7 +8,7 @@ from sqlalchemy.sql import func
 import logging
 from werkzeug.exceptions import NotFound
 
-logging.basicConfig(filename='app.log', encoding='utf-8', level=logging.DEBUG)
+# logging.basicConfig(filename='app.log', encoding='utf-8', level=logging.DEBUG)
 
 load_dotenv()
 
@@ -24,6 +24,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.permanent_session_lifetime = timedelta(minutes=5) 
 
 db.init_app(app)
+
+logging.info("Starting Orders Management App")
 
 class orderInfo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -94,7 +96,7 @@ def remove_order():
             logging.info(f"Removed order with ID: {order.id} and Phone: {order.phone}")
             return render_template('remove_order.html', success="True")
         else:
-            logging.info(f"Unsuccesful Remove order operation with Phone: {order.phone}")
+            logging.warning(f"Unsuccesful Remove order operation with Phone: {order.phone}")
             return render_template('remove_order.html', success="False")
     
 @app.route('/is_order_exists', methods=['POST', 'GET'])
