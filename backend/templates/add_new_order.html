@@ -91,10 +91,15 @@
       // Set the time zone to Jerusalem
       var options = { timeZone: 'Asia/Jerusalem' };
       
-      // Format the date and time string
-      var formattedDate = today.toLocaleString('sv-SE', options).slice(0, 16);
+      // Get the individual date and time components
+      var year = today.toLocaleString('en', { year: 'numeric', timeZone: 'Asia/Jerusalem' });
+      var month = (today.getMonth() + 1).toString().padStart(2, '0');
+      var day = today.toLocaleString('en', { day: 'numeric', timeZone: 'Asia/Jerusalem' });
+      var hours = today.getHours().toString().padStart(2, '0');
+      var minutes = today.getMinutes().toString().padStart(2, '0');
       
       // Set the value attribute of the input field
-      document.getElementById("shipment_date").value = formattedDate;
+      document.getElementById("shipment_date").value = `${year}-${month}-${day}T${hours}:${minutes}`;
     </script>
+    
 {% endblock %}
