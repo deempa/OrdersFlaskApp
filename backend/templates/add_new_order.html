@@ -73,12 +73,26 @@
         <button type="submit" value="Submit" class="btn btn-primary text-nowrap btn-lg">דף בית</button>
     </form>
 
-    <script>
+    <!-- <script>
       // Get the current date and time
       var today = new Date();
       
       // Format the date and time string
       var formattedDate = today.toISOString().slice(0, 16);
+      
+      // Set the value attribute of the input field
+      document.getElementById("shipment_date").value = formattedDate;
+    </script> -->
+
+    <script>
+      // Create a new Date object
+      var today = new Date();
+      
+      // Set the time zone to Jerusalem
+      var options = { timeZone: 'Asia/Jerusalem' };
+      
+      // Format the date and time string
+      var formattedDate = today.toLocaleString('sv-SE', options).slice(0, 16);
       
       // Set the value attribute of the input field
       document.getElementById("shipment_date").value = formattedDate;
