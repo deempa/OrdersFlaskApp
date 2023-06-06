@@ -164,7 +164,7 @@ def view_all_orders_undelivered():
     orders = [order.__dict__ for order in db.session.query(orderInfo).filter(orderInfo.delivered == "לא נמסר")]
     return render_template('view_undelivered_orders.html', headings=headings, data=orders)
 
-@app.route('/view_analytics', methods=['GET'])
+@app.route('/view_analytics', methods=['GET']) 
 def view_revenues():
     query = db.session.query(func.sum(orderInfo.quantity)).filter(orderInfo.delivered == "נמסר")
     total_quantity = query.scalar()
