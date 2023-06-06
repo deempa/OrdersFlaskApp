@@ -146,6 +146,8 @@ pipeline {
     post {
         always {
             sh "docker compose down || echo 'already down'" 
+            sh "docker rmi ${env.IMAGE_NAME}:${nextVersion} || echo 'None Image'"
+            sh "docker rmi ${env.ECR_URL}:${nextVersion} || echo 'None Image'"
             cleanWs()
             echo "========pipeline executed successfully ========"
         }
