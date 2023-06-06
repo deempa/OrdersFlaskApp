@@ -179,6 +179,7 @@ def health():
     try:
         # db.session.execute("SELECT 1").scalar()
         # db.session.query("1").all()
+        orderInfo.query.all()
         data = {'message': 'Done', 'code': 'SUCCESS'}
         return make_response(jsonify(data), 200)
     except Exception as e:
