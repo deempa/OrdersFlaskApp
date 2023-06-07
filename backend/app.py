@@ -119,7 +119,7 @@ def update_order():
     else:
         try:
             phone = request.form['phone']
-            order = db.session.query(orderInfo).filter(orderInfo.phone == phone).one()
+            order = db.session.query(orderInfo).filter(orderInfo.phone == phone).first()
             order.name = request.form['name']
             order.phone = request.form['phone']
             order.address = request.form['address']
