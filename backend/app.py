@@ -83,7 +83,8 @@ def remove_order():
             db.session.delete(order)
             db.session.commit()
             app.logger.info(f"Removed order with ID: {order.id} and Phone: {order.phone}")
-            return render_template('view_all_orders.html', success_delete="True")
+            # return render_template('view_all_orders.html', success_delete="True")
+            return redirect(url_for('view_all_orders', success_delete="True"))
         else:
             app.logger.info(f"Removed order with Phone: {order.phone}")
     else: # POST Method
@@ -94,7 +95,7 @@ def remove_order():
             db.session.delete(order)
             db.session.commit()
             app.logger.info(f"Removed order with ID: {order.id} and Phone: {order.phone}")
-            return render_template('view_all_orders.html', success_delete="True")
+            return redirect(url_for('view_all_orders', success_delete="True"))
         else:
             app.logger.warning(f"Unsuccesful Remove order operation with Phone: {order.phone}")
             return render_template('remove_order.html', success="False")
