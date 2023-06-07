@@ -13,7 +13,7 @@ from werkzeug.exceptions import NotFound
 load_dotenv()
 
 db = SQLAlchemy()
-app = Flask(__name__)
+app = Flask(__name__) 
 
 app.secret_key = "12345678"
 
