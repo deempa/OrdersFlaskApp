@@ -80,7 +80,7 @@ pipeline {
 
                 '''
             }
-        }
+        } 
 
         stage("E2E Tests") {
             when {
