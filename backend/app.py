@@ -121,7 +121,7 @@ def update_order():
             phone = request.form['phone']
             order = db.session.query(orderInfo).filter(orderInfo.phone == phone).one()
             order.name = request.form['name']
-            order.phone = request.form['phone']
+            # order.phone = request.form['phone']
             order.address = request.form['address']
             order.shipment_date = request.form['shipment_date']
             order.payment_method = request.form['payment_method']
