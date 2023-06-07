@@ -25,7 +25,7 @@ app.permanent_session_lifetime = timedelta(minutes=5)
 
 db.init_app(app)
 
-app.logging.info("Starting Orders Management App")
+app.logger.info("Starting Orders Management App")
 
 class orderInfo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -67,7 +67,7 @@ def add_new_order():
             request.form['delivered'], request.form['quantity'])
         db.session.add(new_order)
         db.session.commit()
-        app.logging.info(f"Added new order with ID: {new_order.id}")
+        app.logger.info(f"Added new order with ID: {new_order.id}")
         return render_template('add_new_order.html', success="0")
     
 @app.route('/remove_order', methods=['GET', 'POST'])
@@ -82,10 +82,10 @@ def remove_order():
             order = orderInfo.query.filter_by(phone=phone).first()
             db.session.delete(order)
             db.session.commit()
-            app.logging.info(f"Removed order with ID: {order.id} and Phone: {order.phone}")
+            app.logger.info(f"Removed order with ID: {order.id} and Phone: {order.phone}")
             return render_template('remove_order.html', success="True")
         else:
-            logging.info(f"Removed order with Phone: {order.phone}")
+            app.logger.info(f"Removed order with Phone: {order.phone}")
     else: # POST Method
         phone = request.form['phone']
         exists = db.session.query(orderInfo.id).filter_by(phone=phone).first() is not None
@@ -93,10 +93,10 @@ def remove_order():
             order = orderInfo.query.filter_by(phone=phone).first()
             db.session.delete(order)
             db.session.commit()
-            app.logging.info(f"Removed order with ID: {order.id} and Phone: {order.phone}")
+            app.logger.info(f"Removed order with ID: {order.id} and Phone: {order.phone}")
             return render_template('remove_order.html', success="True")
         else:
-            app.logging.warning(f"Unsuccesful Remove order operation with Phone: {order.phone}")
+            app.logger.warning(f"Unsuccesful Remove order operation with Phone: {order.phone}")
             return render_template('remove_order.html', success="False")
     
 @app.route('/is_order_exists', methods=['POST', 'GET'])
@@ -129,13 +129,13 @@ def update_order():
             order.delivered = request.form['delivered']
             order.quantity = request.form['quantity']
             db.session.commit()
-            app.logging.info(f"Order updated successfully with ID: {order.id} and Phone: {phone}")
+            app.logger.info(f"Order updated successfully with ID: {order.id} and Phone: {phone}")
             return redirect(url_for('view_all_orders')) 
         except NotFound:
             flash("Order not found.")
         except Exception as e:
             flash(f"An error occurred: {str(e)}")
-            app.logging.error(f"Error updating order: {str(e)}")
+            app.logger.error(f"Error updating order: {str(e)}")
         
         return redirect(url_for('update_order'))  # Redirect back to the update form with an error message
 
