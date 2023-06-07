@@ -20,15 +20,16 @@ app.secret_key = "12345678"
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://" + os.getenv("DATABASE_USER") + ":" +\
     os.getenv("DATABASE_PASS") + "@" + os.getenv("DATABASE_HOST") +":3306/" + os.getenv("DATABASE_NAME")
     
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.permanent_session_lifetime = timedelta(minutes=5) 
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# app.permanent_session_lifetime = timedelta(minutes=5) 
 
 db.init_app(app)
 
 if __name__ != '__main__':
     gunicorn_logger = logging.getLogger('gunicorn.error')
     app.logger.handlers = gunicorn_logger.handlers
-    app.logger.setLevel(gunicorn_logger.level)
+    # app.logger.setLevel(gunicorn_logger.level)
+    app.logger.setLevel(logging.DEBUG)
 
 app.logger.info("Starting Orders Management App")
 
