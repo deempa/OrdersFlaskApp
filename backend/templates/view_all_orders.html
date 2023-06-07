@@ -19,9 +19,6 @@
 <body>
     <a href="/"><img src="{{url_for('static', filename='images/logo-white.png')}}" class="logo" alt="test"></a>
     <h1>כל ההזמנות</h1>
-    {% if success_delete == "True" %}
-    <h2>הזמנה נמחקה!</h2>
-    {% endif %}
     <div class="table-responsive container-fluid">
         <table id="myTable" class="table table-hover table-bordered">
             <thead>
