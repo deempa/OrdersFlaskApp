@@ -8,14 +8,7 @@ from sqlalchemy.sql import func
 import logging
 from werkzeug.exceptions import NotFound
 import sys
-
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)s [%(levelname)s] %(message)s',
-                    handlers=[logging.StreamHandler(sys.stdout)])
-
-logger = logging.getLogger('gunicorn.error')
-
-# logging.basicConfig(filename='app.log', encoding='utf-8', level=logging.DEBUG)
+import json_logging
 
 load_dotenv()
 
@@ -32,13 +25,16 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://" + os.getenv("DATABASE
 
 db.init_app(app)
 
-# if __name__ != '__main__':
-#     gunicorn_logger = logging.getLogger('gunicorn.error')
-#     app.logger.handlers = gunicorn_logger.handlers
-#     app.logger.setLevel(gunicorn_logger.level)
-#     app.logger.setLevel(logging.DEBUG)
+json_logging.init_flask(enable_json=True)
+json_logging.init_request_instrument(app)
+
+# init the logger as usual
+logger = logging.getLogger("test-logger")
+logger.setLevel(logging.DEBUG)
+logger.addHandler(logging.StreamHandler(sys.stdout))
 
 logger.info("Starting Orders Management App")
+logger.info("Bla bla", extra={'order_details': {"extra_property": 'extra_value'}})
 
 class orderInfo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -110,7 +106,7 @@ def remove_order():
             logger.info(f"Removed order with ID: {order.id} and Phone: {order.phone}")
             return redirect(url_for('view_all_orders'))
         else:
-            app.logger.warning(f"Unsuccesful Remove order operation with Phone: {order.phone}")
+            logger.warning(f"Unsuccesful Remove order operation with Phone: {order.phone}")
             return render_template('remove_order.html', success="False")
     
 @app.route('/is_order_exists', methods=['POST', 'GET'])
@@ -143,13 +139,13 @@ def update_order():
             order.delivered = request.form['delivered']
             order.quantity = request.form['quantity']
             db.session.commit()
-            app.logger.info(f"Order updated successfully with ID: {order.id} and Phone: {phone}")
+            logger.info(f"Order updated successfully with ID: {order.id} and Phone: {phone}")
             return redirect(url_for('view_all_orders')) 
         except NotFound:
             flash("Order not found.")
         except Exception as e:
             flash(f"An error occurred: {str(e)}")
-            logger.error(f"Error updating order: {str(e)}")
+            logger.info(f"Error updating order: {str(e)}")
         
         return redirect(url_for('update_order'))  # Redirect back to the update form with an error message
 

@@ -5,3 +5,4 @@ PyMySQL
 cryptography
 gunicorn
 Flask-WTF
+json_logging
