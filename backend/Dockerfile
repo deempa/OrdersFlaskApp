@@ -8,6 +8,6 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app", "--capture-output"]
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app", "--capture-output", "--access-logfile '-'", "--error-logfile '-'"]
 
 # CMD [ "python3", "app.py" ]
