@@ -14,6 +14,8 @@ db = SQLAlchemy()
 app = Flask(__name__) 
 metrics = PrometheusMetrics(app)
 
+metrics.info('app_info', 'Application info', version='1.0.3')
+
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://" + os.getenv("DATABASE_USER") + ":" +\
     os.getenv("DATABASE_PASS") + "@" + os.getenv("DATABASE_HOST") +":3306/" + os.getenv("DATABASE_NAME")
     
