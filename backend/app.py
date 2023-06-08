@@ -38,7 +38,7 @@ db.init_app(app)
 #     app.logger.setLevel(gunicorn_logger.level)
 #     app.logger.setLevel(logging.DEBUG)
 
-log.info("Starting Orders Management App")
+logger.info("Starting Orders Management App")
 
 class orderInfo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -80,7 +80,7 @@ def add_new_order():
             request.form['delivered'], request.form['quantity'])
         db.session.add(new_order)
         db.session.commit()
-        log.info(f"Added new order with ID: {new_order.id}")
+        logger.info(f"Added new order with ID: {new_order.id}")
         return render_template('add_new_order.html', success="0")
     
 @app.route('/remove_order', methods=['GET', 'POST'])
@@ -95,11 +95,11 @@ def remove_order():
             order = orderInfo.query.filter_by(phone=phone).first()
             db.session.delete(order)
             db.session.commit()
-            log.info(f"Removed order with ID: {order.id} and Phone: {order.phone}")
+            logger.info(f"Removed order with ID: {order.id} and Phone: {order.phone}")
             # return render_template('view_all_orders.html', success_delete="True")
             return redirect(url_for('view_all_orders'))
         else:
-            log.info(f"Removed order with Phone: {order.phone}")
+            logger.info(f"Removed order with Phone: {order.phone}")
     else: # POST Method
         phone = request.form['phone']
         exists = db.session.query(orderInfo.id).filter_by(phone=phone).first() is not None
@@ -107,7 +107,7 @@ def remove_order():
             order = orderInfo.query.filter_by(phone=phone).first()
             db.session.delete(order)
             db.session.commit()
-            log.info(f"Removed order with ID: {order.id} and Phone: {order.phone}")
+            logger.info(f"Removed order with ID: {order.id} and Phone: {order.phone}")
             return redirect(url_for('view_all_orders'))
         else:
             app.logger.warning(f"Unsuccesful Remove order operation with Phone: {order.phone}")
@@ -149,7 +149,7 @@ def update_order():
             flash("Order not found.")
         except Exception as e:
             flash(f"An error occurred: {str(e)}")
-            log.error(f"Error updating order: {str(e)}")
+            logger.error(f"Error updating order: {str(e)}")
         
         return redirect(url_for('update_order'))  # Redirect back to the update form with an error message
 
@@ -195,7 +195,7 @@ def view_revenues():
 @app.route('/health', methods=['GET'])
 def health():
     try:
-        log.info("Health Get Success lior")
+        logger.info("Health Get Success lior")
         orderInfo.query.all()
         data = {'message': 'Done', 'code': 'SUCCESS'}
         return make_response(jsonify(data), 200)
