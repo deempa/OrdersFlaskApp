@@ -8,6 +8,8 @@ from sqlalchemy.sql import func
 from werkzeug.exceptions import NotFound
 import sys, logging
 import json
+from fluent import sender, handler
+
 
 load_dotenv()
 
@@ -24,28 +26,16 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://" + os.getenv("DATABASE
 
 db.init_app(app)
 
-class SingleLevelFilter(logging.Filter):
-    def __init__(self, passlevel, reject):
-        self.passlevel = passlevel
-        self.reject = reject
+sender.setup('app', server='host', port='24224')
 
-    def filter(self, record):
-        if self.reject:
-            return (record.levelno != self.passlevel)
-        else:
-            return (record.levelno == self.passlevel)
+logging.basicConfig(level=logging.INFO)
+l = logging.getLogger('fluent.test')
+l.addHandler(handler.FluentHandler('app.follow'))
+l.info({
+'from': 'userA',
+'to': 'userB'
+})
 
-h1 = logging.StreamHandler(sys.stdout)
-f1 = SingleLevelFilter(logging.INFO, False)
-h1.addFilter(f1)
-rootLogger = logging.getLogger()
-rootLogger.addHandler(h1)
-h2 = logging.StreamHandler(sys.stderr)
-f2 = SingleLevelFilter(logging.INFO, True)
-h2.addFilter(f2)
-rootLogger.addHandler(h2)
-logger = logging.getLogger("my.logger")
-logger.setLevel(logging.DEBUG)
 
 class orderInfo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
