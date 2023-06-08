@@ -26,7 +26,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://" + os.getenv("DATABASE
 
 db.init_app(app)
 
-sender.setup('app', server='fluentd-headless', port='24224') 
+sender.setup('app', server='host', port='24224') 
 
 logging.basicConfig(level=logging.INFO)
 l = logging.getLogger('fluent.test')
@@ -77,6 +77,10 @@ def add_new_order():
             request.form['delivered'], request.form['quantity'])
         db.session.add(new_order)
         db.session.commit()
+        l.info({
+            'from': 'userA',
+            'to': 'userB'
+            })
         # logger.info(f"Added new order with ID: {new_order.id}")
         return render_template('add_new_order.html', success="0")
     
