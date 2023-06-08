@@ -55,7 +55,7 @@ class orderInfo(db.Model):
 with app.app_context():
     db.create_all()
     
-app.loggger.info("Orders App nominomi started")
+app.logger.info("Orders App nominomi started")
     
 headings = ("שם מלא ", "מספר טלפון", "כתובת משלוח", "תאריך משלוח", "דרך תשלום", "האם שולם?", "האם נמסר?", "כמות" , "לעידכון", "למחיקה")
 
@@ -73,7 +73,7 @@ def add_new_order():
             request.form['delivered'], request.form['quantity'])
         db.session.add(new_order)
         db.session.commit()
-        app.loggger.info(f"Added new order with ID: {new_order.id}")
+        app.logger.info(f"Added new order with ID: {new_order.id}")
         return render_template('add_new_order.html', success="0")
     
 @app.route('/remove_order', methods=['GET', 'POST'])
