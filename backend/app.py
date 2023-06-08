@@ -15,7 +15,7 @@ load_dotenv()
 db = SQLAlchemy()
 app = Flask(__name__) 
 
-app.secret_key = "12345678"
+# app.secret_key = "12345678"
 
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://" + os.getenv("DATABASE_USER") + ":" +\
     os.getenv("DATABASE_PASS") + "@" + os.getenv("DATABASE_HOST") +":3306/" + os.getenv("DATABASE_NAME")
