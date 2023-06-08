@@ -24,7 +24,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://" + os.getenv("DATABASE
 
 db.init_app(app)
 
-print(json.dumps({"app_details": {"msg": "Starting Orders App."}}, indent = 4))
+print("test test test")
 
 class orderInfo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -66,7 +66,8 @@ def add_new_order():
             request.form['delivered'], request.form['quantity'])
         db.session.add(new_order)
         db.session.commit()
-        print(json.dumps({"app_details": {"msg": f"Added new order with ID: {new_order.id}"}}, indent = 4))
+        # print(json.dumps({"app_details": {"msg": f"Added new order with ID: {new_order.id}"}}, indent = 4))
+        print("New Order with id " + new_order.id)
         # root.info(f"Added new order with ID: {new_order.id}")
         return render_template('add_new_order.html', success="0")
     
