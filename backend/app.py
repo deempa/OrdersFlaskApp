@@ -6,31 +6,28 @@ from datetime import timedelta
 from dotenv import load_dotenv
 from sqlalchemy.sql import func
 from werkzeug.exceptions import NotFound
-import sys, logging
-import json
+from prometheus_flask_exporter import PrometheusMetrics
 
 load_dotenv()
 
 db = SQLAlchemy()
 app = Flask(__name__) 
-
-# app.secret_key = "12345678"
+metrics = PrometheusMetrics(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://" + os.getenv("DATABASE_USER") + ":" +\
     os.getenv("DATABASE_PASS") + "@" + os.getenv("DATABASE_HOST") +":3306/" + os.getenv("DATABASE_NAME")
     
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# app.permanent_session_lifetime = timedelta(minutes=5) 
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 
 class orderInfo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
-    phone = db.Column(db.String(200), nullable=False) 
+    phone = db.Column(db.String(200), nullable=False) # unique?
     address = db.Column(db.String(200), nullable=False)
     shipment_date = db.Column(db.DateTime, nullable=False)
-    payment_method = db.Column(db.String(50), nullable=False)
+    payment_method = db.Column(db.String(50), nullable=False) 
     paid = db.Column(db.String(50), nullable=False)
     delivered = db.Column(db.String(50), nullable=False, default='לא')
     quantity = db.Column(db.Integer, nullable=False, default=1)
@@ -59,16 +56,24 @@ def index():
 @app.route('/add_new_order', methods=['GET', 'POST'])
 def add_new_order():
     if request.method == "GET":
-        app.logger.info(f"Get ADD_NEW_ORDER")
         return render_template('add_new_order.html')
     else: # POST Method
-        new_order = orderInfo(request.form['name'], request.form['phone'], request.form['address'],\
-            request.form['shipment_date'], request.form['payment_method'], request.form['paid'],\
-            request.form['delivered'], request.form['quantity'])
-        db.session.add(new_order)
-        db.session.commit()
-        app.logger.info(f"Added new order with ID: {new_order.id}")
-        return render_template('add_new_order.html', success="0")
+        try:
+            new_order = orderInfo(request.form['name'], request.form['phone'], request.form['address'],\
+                request.form['shipment_date'], request.form['payment_method'], request.form['paid'],\
+                request.form['delivered'], request.form['quantity'])
+            db.session.add(new_order)
+            db.session.commit()
+            return render_template('add_new_order.html', success="True")
+        except Exception:
+            return render_template('add_new_order.html', success="False")
+        # new_order = orderInfo(request.form['name'], request.form['phone'], request.form['address'],\
+        #     request.form['shipment_date'], request.form['payment_method'], request.form['paid'],\
+        #     request.form['delivered'], request.form['quantity'])
+        # db.session.add(new_order)
+        # db.session.commit()
+        # app.logger.info(f"Added new order with ID: {new_order.id}")
+        # return render_template('add_new_order.html', success="0")
     
 @app.route('/remove_order', methods=['GET', 'POST'])
 def remove_order():
@@ -130,13 +135,11 @@ def update_order():
             order.delivered = request.form['delivered']
             order.quantity = request.form['quantity']
             db.session.commit()
-            # logger.info(f"Order updated successfully with ID: {order.id} and Phone: {phone}")
             return redirect(url_for('view_all_orders')) 
         except NotFound:
             flash("Order not found.")
         except Exception as e:
             flash(f"An error occurred: {str(e)}")
-            # logger.info(f"Error updating order: {str(e)}")
         
         return redirect(url_for('update_order'))  # Redirect back to the update form with an error message
 
@@ -174,7 +177,6 @@ def view_revenues():
     try:
         revenue = total_quantity * 60 
     except:
-        print("No units sold already")
         revenue = 0
         total_quantity = 0
     return render_template("view_analytics.html", revenue=revenue, units_sold=total_quantity)
@@ -182,7 +184,6 @@ def view_revenues():
 @app.route('/health', methods=['GET'])
 def health():
     try:
-        # logger.info("Health Get Success lior")
         orderInfo.query.all()
         data = {'message': 'Done', 'code': 'SUCCESS'}
         return make_response(jsonify(data), 200)

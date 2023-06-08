@@ -13,8 +13,6 @@
         </div>
         <div class="col">
           <input type="number" name="phone" class="form-control" id="phone" placeholder="מספר טלפון" required>
-          <!-- <input type="tel" id="phone" name="phone" class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required> -->
-
         </div>
       </div>
         
@@ -62,9 +60,9 @@
 
       <br>
 
-      {% if success == "0" %}
+      {% if success == "True" %}
       <h2>הזמנה נוספה בהצלחה ✅</h2>
-      {% elif success == "1" %}
+      {% elif success == "False" %}
       <h2>יש בעיה ❌</h2>
       {% endif %}
 
