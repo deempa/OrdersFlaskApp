@@ -6,7 +6,7 @@ from datetime import timedelta
 from dotenv import load_dotenv
 from sqlalchemy.sql import func
 from werkzeug.exceptions import NotFound
-import sys
+import sys, logging
 import json
 
 load_dotenv()
@@ -24,7 +24,28 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://" + os.getenv("DATABASE
 
 db.init_app(app)
 
-print("test test test")
+class SingleLevelFilter(logging.Filter):
+    def __init__(self, passlevel, reject):
+        self.passlevel = passlevel
+        self.reject = reject
+
+    def filter(self, record):
+        if self.reject:
+            return (record.levelno != self.passlevel)
+        else:
+            return (record.levelno == self.passlevel)
+
+h1 = logging.StreamHandler(sys.stdout)
+f1 = SingleLevelFilter(logging.INFO, False)
+h1.addFilter(f1)
+rootLogger = logging.getLogger()
+rootLogger.addHandler(h1)
+h2 = logging.StreamHandler(sys.stderr)
+f2 = SingleLevelFilter(logging.INFO, True)
+h2.addFilter(f2)
+rootLogger.addHandler(h2)
+logger = logging.getLogger("my.logger")
+logger.setLevel(logging.DEBUG)
 
 class orderInfo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -66,9 +87,7 @@ def add_new_order():
             request.form['delivered'], request.form['quantity'])
         db.session.add(new_order)
         db.session.commit()
-        # print(json.dumps({"app_details": {"msg": f"Added new order with ID: {new_order.id}"}}, indent = 4))
-        print("New Order with id " + new_order.id)
-        # root.info(f"Added new order with ID: {new_order.id}")
+        logger.info(f"Added new order with ID: {new_order.id}")
         return render_template('add_new_order.html', success="0")
     
 @app.route('/remove_order', methods=['GET', 'POST'])
@@ -83,13 +102,10 @@ def remove_order():
             order = orderInfo.query.filter_by(phone=phone).first()
             db.session.delete(order)
             db.session.commit()
-            # root.info(f"Removed order with ID: {order.id} and Phone: {order.phone}")
-            print(json.dumps({"app_details": {"msg": f"Removed order with ID: {order.id} and Phone: {order.phone}"}}, indent = 4))
-            # return render_template('view_all_orders.html', success_delete="True")
+            logger.info(f"Removed order with ID: {order.id} and Phone: {order.phone}")
             return redirect(url_for('view_all_orders'))
         else:
-            # root.info(f"Removed order with Phone: {order.phone}")
-            print(json.dumps({"app_details": {"msg": f"Removed order with Phone: {order.phone}"}}, indent = 4))
+            logger.info(f"Removed order with Phone: {order.phone}")
     else: # POST Method
         phone = request.form['phone']
         exists = db.session.query(orderInfo.id).filter_by(phone=phone).first() is not None
@@ -97,12 +113,10 @@ def remove_order():
             order = orderInfo.query.filter_by(phone=phone).first()
             db.session.delete(order)
             db.session.commit()
-            # root.info(f"Removed order with ID: {order.id} and Phone: {order.phone}")
-            print(json.dumps({"app_details": {"msg": f"Removed order with ID: {order.id} and Phone: {order.phone}"}}, indent = 4))
+            logger.info(f"Removed order with ID: {order.id} and Phone: {order.phone}")
             return redirect(url_for('view_all_orders'))
         else:
-            # root.warning(f"Unsuccesful Remove order operation with Phone: {order.phone}")
-            print(json.dumps({"app_details": {"msg": f"Unsuccesful Remove order operation with Phone: {order.phone}"}}, indent = 4))
+            logger.warning(f"Unsuccesful Remove order operation with Phone: {order.phone}")
             return render_template('remove_order.html', success="False")
     
 @app.route('/is_order_exists', methods=['POST', 'GET'])
@@ -135,14 +149,13 @@ def update_order():
             order.delivered = request.form['delivered']
             order.quantity = request.form['quantity']
             db.session.commit()
-            # root.info(f"Order updated successfully with ID: {order.id} and Phone: {phone}")
-            print(json.dumps({"app_details": {"msg": f"Order updated successfully with ID: {order.id} and Phone: {phone}"}}, indent = 4))
+            logger.info(f"Order updated successfully with ID: {order.id} and Phone: {phone}")
             return redirect(url_for('view_all_orders')) 
         except NotFound:
             flash("Order not found.")
         except Exception as e:
             flash(f"An error occurred: {str(e)}")
-            # root.info(f"Error updating order: {str(e)}")
+            logger.info(f"Error updating order: {str(e)}")
         
         return redirect(url_for('update_order'))  # Redirect back to the update form with an error message
 
@@ -188,7 +201,7 @@ def view_revenues():
 @app.route('/health', methods=['GET'])
 def health():
     try:
-        # root.info("Health Get Success lior")
+        logger.info("Health Get Success lior")
         orderInfo.query.all()
         data = {'message': 'Done', 'code': 'SUCCESS'}
         return make_response(jsonify(data), 200)
