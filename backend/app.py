@@ -9,7 +9,7 @@ import logging
 from werkzeug.exceptions import NotFound
 import sys
 
-logging.basicConfig(level=logging.INFO,
+logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s [%(levelname)s] %(message)s',
                     handlers=[logging.StreamHandler(sys.stdout)])
 
