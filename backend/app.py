@@ -26,16 +26,10 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://" + os.getenv("DATABASE
 
 db.init_app(app)
 
-sender.setup('app', server='host', port='24224') 
-
-logging.basicConfig(level=logging.INFO)
-l = logging.getLogger('fluent.test')
-l.addHandler(handler.FluentHandler('app.follow'))
-l.info({
-'from': 'userA',
-'to': 'userB'
-})
-
+if __name__ != '__main__':
+    gunicorn_logger = logging.getLogger('gunicorn.error')
+    app.logger.handlers = gunicorn_logger.handlers
+    app.logger.setLevel(gunicorn_logger.level)
 
 class orderInfo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -61,6 +55,8 @@ class orderInfo(db.Model):
 with app.app_context():
     db.create_all()
     
+app.loggger.info("Orders App nominomi started")
+    
 headings = ("שם מלא ", "מספר טלפון", "כתובת משלוח", "תאריך משלוח", "דרך תשלום", "האם שולם?", "האם נמסר?", "כמות" , "לעידכון", "למחיקה")
 
 @app.route('/')
@@ -77,11 +73,7 @@ def add_new_order():
             request.form['delivered'], request.form['quantity'])
         db.session.add(new_order)
         db.session.commit()
-        l.info({
-            'from': 'userA',
-            'to': 'userB'
-            })
-        # logger.info(f"Added new order with ID: {new_order.id}")
+        app.loggger.info(f"Added new order with ID: {new_order.id}")
         return render_template('add_new_order.html', success="0")
     
 @app.route('/remove_order', methods=['GET', 'POST'])
