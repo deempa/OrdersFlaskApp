@@ -9,6 +9,23 @@ from werkzeug.exceptions import NotFound
 import sys, logging
 import json
 from fluent import sender, handler
+from logging.config import dictConfig
+
+dictConfig({
+    'version': 1,
+    'formatters': {'default': {
+        'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
+    }},
+    'handlers': {'wsgi': {
+        'class': 'logging.StreamHandler',
+        'stream': 'ext://flask.logging.wsgi_errors_stream',
+        'formatter': 'default'
+    }},
+    'root': {
+        'level': 'INFO',
+        'handlers': ['wsgi']
+    }
+})
 
 
 load_dotenv()
@@ -25,11 +42,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://" + os.getenv("DATABASE
 # app.permanent_session_lifetime = timedelta(minutes=5) 
 
 db.init_app(app)
-
-if __name__ != '__main__':
-    gunicorn_logger = logging.getLogger('gunicorn.error')
-    app.logger.handlers = gunicorn_logger.handlers
-    app.logger.setLevel(gunicorn_logger.level)
 
 class orderInfo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -66,6 +78,7 @@ def index():
 @app.route('/add_new_order', methods=['GET', 'POST'])
 def add_new_order():
     if request.method == "GET":
+        app.logger.info(f"Get ADD_NEW_ORDER")
         return render_template('add_new_order.html')
     else: # POST Method
         new_order = orderInfo(request.form['name'], request.form['phone'], request.form['address'],\
