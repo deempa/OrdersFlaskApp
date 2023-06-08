@@ -5,4 +5,3 @@ PyMySQL
 cryptography
 gunicorn
 Flask-WTF
-fluent-logger

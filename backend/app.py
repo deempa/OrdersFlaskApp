@@ -8,7 +8,6 @@ from sqlalchemy.sql import func
 from werkzeug.exceptions import NotFound
 import sys, logging
 import json
-from fluent import sender, handler
 from logging.config import dictConfig
 
 dictConfig({
@@ -22,7 +21,7 @@ dictConfig({
         'formatter': 'default'
     }},
     'root': {
-        'level': 'INFO',
+        'level': 'DEBUG',
         'handlers': ['wsgi']
     }
 })
