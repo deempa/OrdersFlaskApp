@@ -26,7 +26,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://" + os.getenv("DATABASE
 
 db.init_app(app)
 
-sender.setup('app', server='host', port='24224')
+sender.setup('app', server='host', port='24224') 
 
 logging.basicConfig(level=logging.INFO)
 l = logging.getLogger('fluent.test')
