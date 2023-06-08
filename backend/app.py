@@ -7,9 +7,13 @@ from dotenv import load_dotenv
 from sqlalchemy.sql import func
 import logging
 from werkzeug.exceptions import NotFound
+import sys
 
-log = logging.getLogger(__name__)
-log.addHandler(logging.StreamHandler())
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s [%(levelname)s] %(message)s',
+                    handlers=[logging.StreamHandler(sys.stdout)])
+
+logger = logging.getLogger('gunicorn.error')
 
 # logging.basicConfig(filename='app.log', encoding='utf-8', level=logging.DEBUG)
 
