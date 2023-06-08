@@ -26,7 +26,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://" + os.getenv("DATABASE
 
 db.init_app(app)
 
-sender.setup('app', server='host', port='24224') 
+sender.setup('app', server='fluentd-headless', port='24224') 
 
 logging.basicConfig(level=logging.INFO)
 l = logging.getLogger('fluent.test')
@@ -77,7 +77,7 @@ def add_new_order():
             request.form['delivered'], request.form['quantity'])
         db.session.add(new_order)
         db.session.commit()
-        logger.info(f"Added new order with ID: {new_order.id}")
+        # logger.info(f"Added new order with ID: {new_order.id}")
         return render_template('add_new_order.html', success="0")
     
 @app.route('/remove_order', methods=['GET', 'POST'])
@@ -92,10 +92,11 @@ def remove_order():
             order = orderInfo.query.filter_by(phone=phone).first()
             db.session.delete(order)
             db.session.commit()
-            logger.info(f"Removed order with ID: {order.id} and Phone: {order.phone}")
+            # logger.info(f"Removed order with ID: {order.id} and Phone: {order.phone}")
             return redirect(url_for('view_all_orders'))
         else:
-            logger.info(f"Removed order with Phone: {order.phone}")
+            # logger.info(f"Removed order with Phone: {order.phone}")
+            print("test")
     else: # POST Method
         phone = request.form['phone']
         exists = db.session.query(orderInfo.id).filter_by(phone=phone).first() is not None
@@ -103,10 +104,10 @@ def remove_order():
             order = orderInfo.query.filter_by(phone=phone).first()
             db.session.delete(order)
             db.session.commit()
-            logger.info(f"Removed order with ID: {order.id} and Phone: {order.phone}")
+            # logger.info(f"Removed order with ID: {order.id} and Phone: {order.phone}")
             return redirect(url_for('view_all_orders'))
         else:
-            logger.warning(f"Unsuccesful Remove order operation with Phone: {order.phone}")
+            # logger.warning(f"Unsuccesful Remove order operation with Phone: {order.phone}")
             return render_template('remove_order.html', success="False")
     
 @app.route('/is_order_exists', methods=['POST', 'GET'])
@@ -139,13 +140,13 @@ def update_order():
             order.delivered = request.form['delivered']
             order.quantity = request.form['quantity']
             db.session.commit()
-            logger.info(f"Order updated successfully with ID: {order.id} and Phone: {phone}")
+            # logger.info(f"Order updated successfully with ID: {order.id} and Phone: {phone}")
             return redirect(url_for('view_all_orders')) 
         except NotFound:
             flash("Order not found.")
         except Exception as e:
             flash(f"An error occurred: {str(e)}")
-            logger.info(f"Error updating order: {str(e)}")
+            # logger.info(f"Error updating order: {str(e)}")
         
         return redirect(url_for('update_order'))  # Redirect back to the update form with an error message
 
@@ -191,7 +192,7 @@ def view_revenues():
 @app.route('/health', methods=['GET'])
 def health():
     try:
-        logger.info("Health Get Success lior")
+        # logger.info("Health Get Success lior")
         orderInfo.query.all()
         data = {'message': 'Done', 'code': 'SUCCESS'}
         return make_response(jsonify(data), 200)
