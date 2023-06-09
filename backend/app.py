@@ -7,12 +7,21 @@ from dotenv import load_dotenv
 from sqlalchemy.sql import func
 from werkzeug.exceptions import NotFound
 from prometheus_flask_exporter import PrometheusMetrics
+import logging
 
 load_dotenv()
 
 db = SQLAlchemy()
 app = Flask(__name__) 
 metrics = PrometheusMetrics(app)
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(asctime)s %(levelname)s %(message)s",
+    datefmt="%Y-%m-%dT%H:%M:%S.%N%:z"
+)
+
+logging.info("NomiNomi")
 
 metrics.info('app_info', 'Application info', version='1.0.3')
 
@@ -53,11 +62,13 @@ headings = ("שם מלא ", "מספר טלפון", "כתובת משלוח", "ת�
 
 @app.route('/')
 def index():
+    logging.info("Here in index")
     return render_template('index.html')
 
 @app.route('/add_new_order', methods=['GET', 'POST'])
 def add_new_order():
     if request.method == "GET":
+        logging.info("Here in Add new Order")
         return render_template('add_new_order.html')
     else: # POST Method
         try:
