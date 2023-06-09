@@ -7,7 +7,8 @@ from dotenv import load_dotenv
 from sqlalchemy.sql import func
 from werkzeug.exceptions import NotFound
 from prometheus_flask_exporter import PrometheusMetrics
-import logging, sys, json_logging
+from fluent import handler
+import logging
 
 load_dotenv()
 
@@ -15,16 +16,24 @@ db = SQLAlchemy()
 app = Flask(__name__) 
 metrics = PrometheusMetrics(app)
 
-json_logging.init_flask(enable_json=True)
-json_logging.init_request_instrument(app)
-
-logger = logging.getLogger("test-logger")
-logger.setLevel(logging.DEBUG)
-logger.addHandler(logging.StreamHandler(sys.stdout))
-
-logger.info("test log statement")
-
 metrics.info('app_info', 'Application info', version='1.0.3')
+
+custom_format = {
+  'host': '%(hostname)s',
+  'where': '%(module)s.%(funcName)s',
+  'type': '%(levelname)s',
+  'stack_trace': '%(exc_text)s'
+}
+
+logging.basicConfig(level=logging.DEBUG)
+l = logging.getLogger('fluent.test')
+h = handler.FluentHandler('app.follow', host='host', port=24224)
+formatter = handler.FluentRecordFormatter(custom_format)
+h.setFormatter(formatter)
+l.addHandler(h)
+
+l.info('{"from": "userC", "to": "userD"}')
+
 
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://" + os.getenv("DATABASE_USER") + ":" +\
     os.getenv("DATABASE_PASS") + "@" + os.getenv("DATABASE_HOST") +":3306/" + os.getenv("DATABASE_NAME")
@@ -57,19 +66,17 @@ class orderInfo(db.Model):
 with app.app_context():
     db.create_all()
     
-app.logger.info("Orders App nominomi started")
     
 headings = ("שם מלא ", "מספר טלפון", "כתובת משלוח", "תאריך משלוח", "דרך תשלום", "האם שולם?", "האם נמסר?", "כמות" , "לעידכון", "למחיקה")
 
 @app.route('/')
 def index():
-    logger.info("test log statement with extra props", extra={'props': {"extra_property": 'extra_value'}})
+    l.info('{"from": "userC", "to": "userD"}')
     return render_template('index.html')
 
 @app.route('/add_new_order', methods=['GET', 'POST'])
 def add_new_order():
     if request.method == "GET":
-        logger.info("test log statement with extra props", extra={'props': {"extra_property": 'extra_value'}})
         return render_template('add_new_order.html')
     else: # POST Method
         try:
