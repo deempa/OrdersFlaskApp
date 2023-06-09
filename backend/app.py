@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from sqlalchemy.sql import func
 from werkzeug.exceptions import NotFound
 from prometheus_flask_exporter import PrometheusMetrics
-from fluent import handler
+from fluent import sender
 import logging
 
 load_dotenv()
@@ -16,24 +16,11 @@ db = SQLAlchemy()
 app = Flask(__name__) 
 metrics = PrometheusMetrics(app)
 
+logger = sender.FluentSender('app', host='fluentd-headless', port=9880)
+
+logger.emit('follow', {'from': 'userA', 'to': 'userB'})
+
 metrics.info('app_info', 'Application info', version='1.0.3')
-
-custom_format = {
-  'host': '%(hostname)s',
-  'where': '%(module)s.%(funcName)s',
-  'type': '%(levelname)s',
-  'stack_trace': '%(exc_text)s'
-}
-
-logging.basicConfig(level=logging.DEBUG)
-l = logging.getLogger('fluent.test')
-h = handler.FluentHandler('app.follow', host='host', port=24224)
-formatter = handler.FluentRecordFormatter(custom_format)
-h.setFormatter(formatter)
-l.addHandler(h)
-
-l.info('{"from": "userC", "to": "userD"}')
-
 
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://" + os.getenv("DATABASE_USER") + ":" +\
     os.getenv("DATABASE_PASS") + "@" + os.getenv("DATABASE_HOST") +":3306/" + os.getenv("DATABASE_NAME")
@@ -71,7 +58,7 @@ headings = ("שם מלא ", "מספר טלפון", "כתובת משלוח", "ת�
 
 @app.route('/')
 def index():
-    l.info('{"from": "userC", "to": "userD"}')
+    logger.emit('follow', {'from': 'Nominomi', 'to': 'userB'})
     return render_template('index.html')
 
 @app.route('/add_new_order', methods=['GET', 'POST'])
