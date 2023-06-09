@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from sqlalchemy.sql import func
 from werkzeug.exceptions import NotFound
 from prometheus_flask_exporter import PrometheusMetrics
-import logging
+import logging, sys, json_logging
 
 load_dotenv()
 
@@ -15,13 +15,14 @@ db = SQLAlchemy()
 app = Flask(__name__) 
 metrics = PrometheusMetrics(app)
 
-logging.basicConfig(
-    level=logging.DEBUG,
-    format="%(asctime)s %(levelname)s %(message)s",
-    datefmt="%Y-%m-%dT%H:%M:%S.%N%:z"
-)
+json_logging.init_flask(enable_json=True)
+json_logging.init_request_instrument(app)
 
-logging.info("NomiNomi")
+logger = logging.getLogger("test-logger")
+logger.setLevel(logging.DEBUG)
+logger.addHandler(logging.StreamHandler(sys.stdout))
+
+logger.info("test log statement")
 
 metrics.info('app_info', 'Application info', version='1.0.3')
 
@@ -62,13 +63,13 @@ headings = ("שם מלא ", "מספר טלפון", "כתובת משלוח", "ת�
 
 @app.route('/')
 def index():
-    logging.info("Here in index")
+    logger.info("test log statement with extra props", extra={'props': {"extra_property": 'extra_value'}})
     return render_template('index.html')
 
 @app.route('/add_new_order', methods=['GET', 'POST'])
 def add_new_order():
     if request.method == "GET":
-        logging.info("Here in Add new Order")
+        logger.info("test log statement with extra props", extra={'props': {"extra_property": 'extra_value'}})
         return render_template('add_new_order.html')
     else: # POST Method
         try:

@@ -6,3 +6,4 @@ cryptography
 gunicorn
 Flask-WTF
 prometheus-flask-exporter
+json-logging
