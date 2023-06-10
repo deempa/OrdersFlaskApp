@@ -125,6 +125,16 @@ pipeline {
             }
         }
 
+        stage('Update S3 Static') {
+            when {
+                branch 'main'
+            }
+            steps {
+                sh "aws s3 sync ./backend/static/ s3://lior-porftolio-staticfiles/static"
+            }
+        }
+
+
         stage("Update ArgoCD") {
             when {
                 branch 'main'
