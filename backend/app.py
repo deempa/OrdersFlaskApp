@@ -23,8 +23,8 @@ if __name__ != '__main__':
     app.logger.handlers = gunicorn_logger.handlers
     app.logger.setLevel(logging.DEBUG)
     
-app.logger.info('this is an INFO message')
-app.logger.info('this is an INFO message')
+app.logger.info('NomiNomi App started.')
+
 
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://" + os.getenv("DATABASE_USER") + ":" +\
     os.getenv("DATABASE_PASS") + "@" + os.getenv("DATABASE_HOST") +":3306/" + os.getenv("DATABASE_NAME")
@@ -32,8 +32,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://" + os.getenv("DATABASE
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
-
-
 
 class orderInfo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -64,7 +62,7 @@ headings = ("שם מלא ", "מספר טלפון", "כתובת משלוח", "ת�
 
 @app.route('/')
 def index():
-    app.logger.info('Index NomiNomi Page')
+    app.logger.info('Index Page Route')
     return render_template('index.html')
 
 @app.route('/add_new_order', methods=['GET', 'POST'])
@@ -78,6 +76,7 @@ def add_new_order():
                 request.form['delivered'], request.form['quantity'])
             db.session.add(new_order)
             db.session.commit()
+            app.logger.info(f"Added new order with ID: {new_order.id}")
             return render_template('add_new_order.html', success="True")
         except Exception:
             return render_template('add_new_order.html', success="False")
@@ -101,7 +100,7 @@ def remove_order():
             order = orderInfo.query.filter_by(phone=phone).first()
             db.session.delete(order)
             db.session.commit()
-            # logger.info(f"Removed order with ID: {order.id} and Phone: {order.phone}")
+            app.logger.info(f"Removed order with ID: {order.id} and Phone: {order.phone}")
             return redirect(url_for('view_all_orders'))
         else:
             # logger.info(f"Removed order with Phone: {order.phone}")
@@ -113,10 +112,10 @@ def remove_order():
             order = orderInfo.query.filter_by(phone=phone).first()
             db.session.delete(order)
             db.session.commit()
-            # logger.info(f"Removed order with ID: {order.id} and Phone: {order.phone}")
+            app.logger.info(f"Removed order with ID: {order.id} and Phone: {order.phone}")
             return redirect(url_for('view_all_orders'))
         else:
-            # logger.warning(f"Unsuccesful Remove order operation with Phone: {order.phone}")
+            app.logger.warning(f"Unsuccesful Remove order operation with Phone: {order.phone}")
             return render_template('remove_order.html', success="False")
     
 @app.route('/is_order_exists', methods=['POST', 'GET'])
@@ -130,6 +129,7 @@ def is_order_exists():
             shipment_date=order["shipment_date"], payment_method=order["payment_method"], paid=order["paid"], \
             delivered=order["delivered"], quantity=order["quantity"])
     else:
+        app.logger.info(f"Order is exist.")
         return render_template('update_order.html', is_exists="False")
          
 @app.route('/update_order', methods=['GET', 'POST'])
@@ -149,9 +149,11 @@ def update_order():
             order.delivered = request.form['delivered']
             order.quantity = request.form['quantity']
             db.session.commit()
+            app.logger.info(f"Order update succesfuly with ID: {order.id} and Phone: {phone}")
             return redirect(url_for('view_all_orders')) 
         except NotFound:
             flash("Order not found.")
+            app.logger.info(f"Order Not Found.")
         except Exception as e:
             flash(f"An error occurred: {str(e)}")
         
@@ -188,6 +190,7 @@ def view_all_orders_undelivered():
 def view_revenues():
     query = db.session.query(func.sum(orderInfo.quantity)).filter(orderInfo.delivered == "נמסר")
     total_quantity = query.scalar()
+    app.logger.info(f"Total orders delivered: {total_quantity}")
     try:
         revenue = total_quantity * 60 
     except:
