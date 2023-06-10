@@ -76,7 +76,7 @@ def add_new_order():
                 request.form['delivered'], request.form['quantity'])
             db.session.add(new_order)
             db.session.commit()
-            app.logger.info(f"Added new order with ID: {new_order.id}")
+            app.logger.info(f"Added new order with Name: {new_order.name}")
             return render_template('add_new_order.html', success="True")
         except Exception:
             return render_template('add_new_order.html', success="False")
