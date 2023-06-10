@@ -76,7 +76,7 @@ def add_new_order():
                 request.form['delivered'], request.form['quantity'])
             db.session.add(new_order)
             db.session.commit()
-            app.logger.info(f"Added new order with Name: {new_order.name}")
+            app.logger.info(f"Added new order with Name: {request.form['name']}")
             return render_template('add_new_order.html', success="True")
         except Exception:
             return render_template('add_new_order.html', success="False")
@@ -100,7 +100,7 @@ def remove_order():
             order = orderInfo.query.filter_by(phone=phone).first()
             db.session.delete(order)
             db.session.commit()
-            app.logger.info(f"Removed order with ID: {order.id} and Phone: {order.phone}")
+            app.logger.info(f"Removed order with Phone: {phone}")
             return redirect(url_for('view_all_orders'))
         else:
             # logger.info(f"Removed order with Phone: {order.phone}")
@@ -112,10 +112,10 @@ def remove_order():
             order = orderInfo.query.filter_by(phone=phone).first()
             db.session.delete(order)
             db.session.commit()
-            app.logger.info(f"Removed order with ID: {order.id} and Phone: {order.phone}")
+            app.logger.info(f"Removed order with Phone: {phone}")
             return redirect(url_for('view_all_orders'))
         else:
-            app.logger.warning(f"Unsuccesful Remove order operation with Phone: {order.phone}")
+            app.logger.warning(f"Unsuccesful Remove order operation with Phone: {phone}")
             return render_template('remove_order.html', success="False")
     
 @app.route('/is_order_exists', methods=['POST', 'GET'])
@@ -149,7 +149,7 @@ def update_order():
             order.delivered = request.form['delivered']
             order.quantity = request.form['quantity']
             db.session.commit()
-            app.logger.info(f"Order update succesfuly with ID: {order.id} and Phone: {phone}")
+            app.logger.info(f"Order update succesfuly with Phone: {phone}")
             return redirect(url_for('view_all_orders')) 
         except NotFound:
             flash("Order not found.")
