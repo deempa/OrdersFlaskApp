@@ -16,11 +16,15 @@ db = SQLAlchemy()
 app = Flask(__name__) 
 metrics = PrometheusMetrics(app)
 
-logger = sender.FluentSender('app', host='fluentd-headless', port=9880)
-
-logger.emit('follow', {'from': 'userA', 'to': 'userB'})
-
 metrics.info('app_info', 'Application info', version='1.0.3')
+
+if __name__ != '__main__':
+    gunicorn_logger = logging.getLogger('gunicorn.error')
+    app.logger.handlers = gunicorn_logger.handlers
+    app.logger.setLevel(logging.DEBUG)
+    
+app.logger.info('this is an INFO message')
+app.logger.info('this is an INFO message')
 
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://" + os.getenv("DATABASE_USER") + ":" +\
     os.getenv("DATABASE_PASS") + "@" + os.getenv("DATABASE_HOST") +":3306/" + os.getenv("DATABASE_NAME")
@@ -28,6 +32,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://" + os.getenv("DATABASE
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
+
+
 
 class orderInfo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -58,7 +64,7 @@ headings = ("שם מלא ", "מספר טלפון", "כתובת משלוח", "ת�
 
 @app.route('/')
 def index():
-    logger.emit('follow', {'from': 'Nominomi', 'to': 'userB'})
+    app.logger.info('Index NomiNomi Page')
     return render_template('index.html')
 
 @app.route('/add_new_order', methods=['GET', 'POST'])
