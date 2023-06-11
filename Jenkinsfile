@@ -59,7 +59,7 @@ pipeline {
             }
         }
 
-        stage("Unit Tests") {
+        stage("Run Test Env") {
             when {
                 anyOf {
                     branch 'main'
@@ -68,6 +68,8 @@ pipeline {
             }
             steps {
                 sh "docker compose up -d"
+
+                sh "echo 'Basic Health Check'"
                 sh '''#!/bin/bash
                     for (( i=0; i <= 15; ++i ))
                     do
@@ -77,7 +79,6 @@ pipeline {
                             break
                         fi
                     done
-
                 '''
             }
         } 
@@ -159,13 +160,14 @@ pipeline {
             sh "docker rmi ${env.IMAGE_NAME}:${nextVersion} || echo 'None Image'"
             sh "docker rmi ${env.ECR_URL}:${nextVersion} || echo 'None Image'"
             cleanWs()
-            echo "========pipeline executed successfully ========"
         }
         success {
-            echo "========pipeline executed successfully ========"
+            emailext body: 'The Build was Success - #$BUILD_NUMBER', recipientProviders: [culprits(), developers()], subject: 'Success Build - #$BUILD_NUMBER'
+            updateGitlabCommitStatus name: 'build', state: 'success'
         }
         failure {
-            echo "========pipeline execution failed========"
+            emailext body: 'The Build was failed', recipientProviders: [culprits(), developers()], subject: 'Failed Build'
+            updateGitlabCommitStatus name: 'build', state: 'failed'
         }
     }
 }

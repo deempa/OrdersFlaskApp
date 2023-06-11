@@ -36,7 +36,7 @@ db.init_app(app)
 class orderInfo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
-    phone = db.Column(db.String(200), nullable=False) # unique?
+    phone = db.Column(db.String(200), nullable=False)
     address = db.Column(db.String(200), nullable=False)
     shipment_date = db.Column(db.DateTime, nullable=False)
     payment_method = db.Column(db.String(50), nullable=False) 
@@ -68,7 +68,7 @@ def index():
 def add_new_order():
     if request.method == "GET":
         return render_template('add_new_order.html')
-    else: # POST Method
+    else: 
         try:
             new_order = orderInfo(request.form['name'], request.form['phone'], request.form['address'],\
                 request.form['shipment_date'], request.form['payment_method'], request.form['paid'],\
@@ -97,7 +97,7 @@ def remove_order():
         else:
             # logger.info(f"Removed order with Phone: {order.phone}")
             print("test")
-    else: # POST Method
+    else: 
         phone = request.form['phone']
         exists = db.session.query(orderInfo.id).filter_by(phone=phone).first() is not None
         if exists:
@@ -151,7 +151,7 @@ def update_order():
         except Exception as e:
             flash(f"An error occurred: {str(e)}")
         
-        return redirect(url_for('update_order'))  # Redirect back to the update form with an error message
+        return redirect(url_for('update_order')) 
     
 @app.route('/view_all_orders', methods=['GET'])
 def view_all_orders():
