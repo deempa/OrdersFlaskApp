@@ -22,6 +22,11 @@ pipeline {
             steps {
                 sshagent(["flask-app"]) { 
                     script {            
+                        if (env.GIT_COMMIT_MSG =~ /(\d+\.\d+)$/) {
+                            println "Ok"
+                        } else {
+                            error('Aborting the build - No valid commit message.')
+                        } 
                         sh 'git fetch --all --tags'
                         Version = (env.GIT_COMMIT_MSG  =~ /(\d+\.\d+)$/)[0][1]
                         def baseVersion = "${Version}"
@@ -96,17 +101,9 @@ pipeline {
                 branch 'main'
             }
             steps {
-                script {
-                    if (env.GIT_COMMIT_MSG =~ /(\d+\.\d+)$/) {
-                        println "Ok"
-                    } else {
-                        error('Aborting the build - No valid commit message.')
-                    } 
-                    sh "aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin 644435390668.dkr.ecr.eu-west-2.amazonaws.com"
-                    sh "docker tag ${env.IMAGE_NAME}:${nextVersion} ${env.ECR_URL}:${nextVersion}"
-                    sh "docker push ${env.ECR_URL}:${nextVersion}" 
-                }
-
+                sh "aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin 644435390668.dkr.ecr.eu-west-2.amazonaws.com"
+                sh "docker tag ${env.IMAGE_NAME}:${nextVersion} ${env.ECR_URL}:${nextVersion}"
+                sh "docker push ${env.ECR_URL}:${nextVersion}" 
             }
         }
 
