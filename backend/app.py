@@ -57,7 +57,6 @@ class orderInfo(db.Model):
 with app.app_context():
     db.create_all()
     
-    
 headings = ("שם מלא ", "מספר טלפון", "כתובת משלוח", "תאריך משלוח", "דרך תשלום", "האם שולם?", "האם נמסר?", "כמות" , "לעידכון", "למחיקה")
 
 @app.route('/')
@@ -80,13 +79,6 @@ def add_new_order():
             return render_template('add_new_order.html', success="True")
         except Exception:
             return render_template('add_new_order.html', success="False")
-        # new_order = orderInfo(request.form['name'], request.form['phone'], request.form['address'],\
-        #     request.form['shipment_date'], request.form['payment_method'], request.form['paid'],\
-        #     request.form['delivered'], request.form['quantity'])
-        # db.session.add(new_order)
-        # db.session.commit()
-        # app.logger.info(f"Added new order with ID: {new_order.id}")
-        # return render_template('add_new_order.html', success="0")
     
 @app.route('/remove_order', methods=['GET', 'POST'])
 def remove_order():
@@ -125,12 +117,14 @@ def is_order_exists():
     if exists:
         order = db.session.query(orderInfo).filter_by(phone=phone).first()
         order = order.__dict__
+        app.logger.info(f"Order is exist.")
         return render_template('update_order.html', is_exists="True", name=order["name"], phone=order["phone"], address=order["address"],\
             shipment_date=order["shipment_date"], payment_method=order["payment_method"], paid=order["paid"], \
             delivered=order["delivered"], quantity=order["quantity"])
     else:
-        app.logger.info(f"Order is exist.")
+        app.logger.info(f"Order is not exist.")
         return render_template('update_order.html', is_exists="False")
+    
          
 @app.route('/update_order', methods=['GET', 'POST'])
 def update_order():
@@ -158,23 +152,6 @@ def update_order():
             flash(f"An error occurred: {str(e)}")
         
         return redirect(url_for('update_order'))  # Redirect back to the update form with an error message
-
-    # if request.method == "GET":
-    #     return render_template('update_order.html')
-    # else:
-    #     phone = request.form['phone']
-    #     order = db.session.query(orderInfo).filter(orderInfo.phone == phone).one()
-    #     order.name = request.form['name']
-    #     order.phone = request.form['phone']
-    #     order.address = request.form['address']
-    #     order.shipment_date = request.form['shipment_date']
-    #     order.payment_method = request.form['payment_method']
-    #     order.paid = request.form['paid']
-    #     order.delivered = request.form['delivered']
-    #     order.quantity = request.form['quantity']
-    #     db.session.commit()
-    #     logging.info(f"Order update succesfuly with ID: {order.id} and Phone: {phone}")
-    #     return redirect(url_for('view_all_orders'))
     
 @app.route('/view_all_orders', methods=['GET'])
 def view_all_orders():
