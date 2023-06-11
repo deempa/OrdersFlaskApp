@@ -9,7 +9,7 @@ pipeline {
         CONTAINER_TEST_NAME = "orders_app_test"
         GIT_COMMIT_MSG = sh (script: 'git log -1 --pretty=%B ${GIT_COMMIT}', returnStdout: true).trim()
         PUBLIC_IP = sh (script: 'curl ifconfig.me', returnStdout: true).trim()
-        NETWORK_NAME = "lab_default"
+        EMAIL_TO = "liorraban2@gmail.com"
     }
     stages {
         stage("Find Last Version") {
