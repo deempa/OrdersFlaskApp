@@ -9,7 +9,6 @@ pipeline {
         CONTAINER_TEST_NAME = "orders_app_test"
         GIT_COMMIT_MSG = sh (script: 'git log -1 --pretty=%B ${GIT_COMMIT}', returnStdout: true).trim()
         PUBLIC_IP = sh (script: 'curl ifconfig.me', returnStdout: true).trim()
-        EMAIL_TO = "liorraban2@gmail.com"
     }
     stages {
         stage("Find Last Version") {
@@ -21,7 +20,10 @@ pipeline {
             }
             steps {
                 sshagent(["flask-app"]) { 
-                    script {            
+                    script {         
+                        if (env.BRANCH_NAME =~ ^feature/.*) {
+                            nextVersion = "0.0.0"
+                        }
                         if (env.GIT_COMMIT_MSG =~ /(\d+\.\d+)$/) {
                             println "Ok"
                         } else {
@@ -59,30 +61,6 @@ pipeline {
             }
         }
 
-        stage("Run Test Env") {
-            when {
-                anyOf {
-                    branch 'main'
-                    branch "feature/*"
-                }            
-            }
-            steps {
-                sh "docker compose up -d"
-
-                sh "echo 'Basic Health Check'"
-                sh '''#!/bin/bash
-                    for (( i=0; i <= 15; ++i ))
-                    do
-                        response_code=$(curl -s -o /dev/null -w "%{http_code}" "http://${PUBLIC_IP}:8087/health")
-                        if [ "$response_code" -eq 200 ]; then
-                            echo "Ping successful!"
-                            break
-                        fi
-                    done
-                '''
-            }
-        } 
-
         stage("E2E Tests") {
             when {
                 anyOf {
@@ -91,7 +69,8 @@ pipeline {
                 }            
             }
             steps {
-                sh "sleep 5"
+                sh "docker compose up -d"
+                sh "sleep 7"
                 sh "pytest tests/e2e.py"
                 sh "docker compose down" 
             }
@@ -108,7 +87,7 @@ pipeline {
             }
         }
 
-        stage('Clean and reset') {
+        stage('Push Tag') {
             when {
                 branch 'main'
             }
