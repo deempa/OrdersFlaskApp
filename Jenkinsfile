@@ -21,11 +21,11 @@ pipeline {
             steps {
                 sshagent(["flask-app"]) { 
                     script {         
-                        if (env.BRANCH_NAME =~ ^feature/.*) {
+                        if (env.BRANCH_NAME =~ /^feature\/.*/) {
                             nextVersion = "0.0.0"
                         }
                         if (env.GIT_COMMIT_MSG =~ /(\d+\.\d+)$/) {
-                            println "Ok"
+                            println "Valid commit message."
                         } else {
                             error('Aborting the build - No valid commit message.')
                         } 
@@ -87,7 +87,7 @@ pipeline {
             }
         }
 
-        stage('Push Tag') {
+        stage('Push Git Tag') {
             when {
                 branch 'main'
             }
@@ -105,7 +105,7 @@ pipeline {
             }
         }
 
-        stage('Update S3 Static') {
+        stage('Update S3 Static Files') {
             when {
                 branch 'main'
             }
