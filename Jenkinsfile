@@ -1,4 +1,4 @@
-def nextVersion
+def nextVersion = "0.0.0"
 def Version
 
 pipeline {
@@ -15,15 +15,11 @@ pipeline {
             when {
                 anyOf {
                     branch 'main'
-                    branch "feature/*"
                 }            
             }
             steps {
                 sshagent(["flask-app"]) { 
                     script {         
-                        if (env.BRANCH_NAME =~ /^feature\/.*/) {
-                            nextVersion = "0.0.0"
-                        }
                         if (env.GIT_COMMIT_MSG =~ /(\d+\.\d+)$/) {
                             println "Valid commit message."
                         } else {
